@@ -2,28 +2,10 @@
   display: grid;
   grid-template-rows: 60px 40px 1fr;
   height: 100vh;
+
+  background-color: #c36868;
 }
 
-/* Navigation */
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-
-  background-color: #1e293b;
-  color: white;
-}
-
-.nav-links a {
-  margin-left: 15px;
-  color: white;
-  text-decoration: none;
-}
-
-.nav-links a:hover {
-  text-decoration: underline;
-}
 
 /* Status Bar */
 .status {
@@ -39,5 +21,7 @@
 /* Main Content */
 .content {
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: auto auto;
+  height: calc(100vh - 180px);
+  gap: 10px;
 }

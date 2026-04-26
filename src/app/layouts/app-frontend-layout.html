@@ -1,8 +1,6 @@
 <div class="layout">
   <!-- Top Navigation -->
-  <header class="nav">
-    <app-header></app-header>
-  </header>
+  <app-header></app-header>
 
   <!-- Status Bar -->
   <div class="status">
@@ -12,7 +10,7 @@
   <!-- Main Content -->
   <main class="content">
     <app-aggrid [status]= 'GridStatus.Pending'></app-aggrid>
-    <app-aggrid [status]= 'GridStatus.Completed'></app-aggrid>
+    <!--<app-aggrid [status]= 'GridStatus.Completed'></app-aggrid> -->
     <app-aggrid [status]= 'GridStatus.ActionRequired'></app-aggrid>
   </main>
 

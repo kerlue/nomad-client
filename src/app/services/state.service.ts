@@ -68,59 +68,17 @@ export class PlannerStateService {
 
   private loadDataOnFilterChanged(location: string) {
 
-    this.apiService.get(location, 0).subscribe({
-      next: result => {
-        this.activeDock.set(this.getDockForLocation(location))
-        this.palletRoutes.set([])
-        this.syncIncomingRoutePallets(result);
-        this.header.showBuffering.set(false);
-      },
-      error: err => {
-        this.dialog.open(ServerNotReachableDialogComponent, { disableClose: true });
-        this.header.showBuffering.set(false);
-      },
-    });
   }
 
   private pollForOrders() {
     this.ngZone.runOutsideAngular(() => {
-      this.apiService
-        .pollForOrders(this.selectedWarehouse, this.palletRouteTimestamp)
-        .subscribe({
-          next: incomingRoutes => {
-            if (incomingRoutes.length <= 0) {
-              return;
-            }
-            this.syncIncomingRoutePallets(incomingRoutes);
-          },
-          error: err => {
-            this.dialog.closeAll();
-            this.dialog.open(ServerNotReachableDialogComponent, {
-              disableClose: true,
-            });
-          },
-        });
+
     });
   }
 
   private pollForStats() {
     this.ngZone.runOutsideAngular(() => {
-      this.apiService
-        .pollForStats(this.selectedWarehouse, this.palletRouteTimestamp)
-        .subscribe({
-          next: incomingRoutes => {
-            if (incomingRoutes.length <= 0) {
-              return;
-            }
-            this.syncIncomingRoutePallets(incomingRoutes);
-          },
-          error: err => {
-            this.dialog.closeAll();
-            this.dialog.open(ServerNotReachableDialogComponent, {
-              disableClose: true,
-            });
-          },
-        });
+
     });
   }
 
