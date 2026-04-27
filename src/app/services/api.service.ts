@@ -8,7 +8,7 @@ import {
 import {HttpClient} from "@angular/common/http";
 import {switchMap} from "rxjs/operators";
 import { environment } from '../environments/environment';
-import { InitialState, Orders, Stats } from '../shared/interface';
+import { InitialState, OrderResult, Orders, Stats } from '../shared/interface';
 
 @Injectable({
   providedIn: 'root',
@@ -39,15 +39,37 @@ export class ApiService {
     );
   }
 
-  public pollForOrders(divisionId: WritableSignal<string>, timestamp: WritableSignal<number>) {
-    return timer(1000, 3000).pipe(
-      switchMap(() => {
-        let url: string = `${this.nomadApi}/get-pallet-routes/${divisionId()}/${timestamp()}`;
-        return this.http.get<Orders[]>(url);
-      }),
-    );
+  getOrderUpdate(
+    timestamp: number,
+    shippingDate: string,
+    warehouse: string
+  ) {
+    const url = `${this.nomadApi}/poll-orders`;
+
+    const input = {
+      timestamp,
+      shippingDate,
+      warehouse
+    };
+
+    return this.http.post<OrderResult>(url, input);
   }
 
+  pollOrderUpdate(
+    pollTimestamp: WritableSignal<number>,
+    date: Signal<string>,
+    divisionId: WritableSignal<string>
+  ) {
+    return timer(5000, 10000).pipe(
+      switchMap(() =>
+        this.getOrderUpdate(
+          pollTimestamp(),
+          date(),
+          divisionId()
+        )
+      )
+    );
+  }
 
 }
 

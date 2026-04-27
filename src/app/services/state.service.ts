@@ -1,10 +1,11 @@
-import {effect, Injectable, NgZone, signal, WritableSignal} from "@angular/core";
+import { computed, effect, Injectable, NgZone, Signal, signal, WritableSignal } from '@angular/core';
 
 import { ApiService } from './api.service';
 import {MatDialog} from "@angular/material/dialog";
 import { AuthService } from './auth.service';
 import { LocalStorageService } from './local-storage.service';
 import { ServerNotReachableDialogComponent } from '../components/dialogs/server-not-reachable-dialog.component';
+import { HeaderStateService } from '../components/header/header-state.service';
 const DOCK_MODE_KEY = 'dockMode';
 const SAVED_WAREHOUSE_ID = 'warehouseId';
 
@@ -18,11 +19,14 @@ export class StateService {
   shippingDate: WritableSignal<Date> = signal<Date>(this.tomorrowDate);
   selectedWarehouse: WritableSignal<string> = signal<string>('');
   warehouseDropdownList: WritableSignal<string[]> = signal<string[]>([]);
+  pollTimestamp: WritableSignal<number> = signal<number>(0);
+  localShippingDate: Signal<string>;
 
   constructor(
     private apiService: ApiService,
     private ngZone: NgZone,
     protected dialog: MatDialog,
+    protected header: HeaderStateService,
     protected localStorage: LocalStorageService,
   ) {
 
@@ -60,7 +64,20 @@ export class StateService {
     effect(() => {
       if(this.selectedWarehouse() == "") return;
       this.localStorage.setItem(SAVED_WAREHOUSE_ID, this.selectedWarehouse());
-      this.loadDataOnFilterChanged(this.selectedWarehouse());
+      this.loadDataOnFilterChanged();
+    });
+
+    // Computed signal that returns date string in NYC timezone
+    this.localShippingDate = computed(() => {
+      const options: Intl.DateTimeFormatOptions = {
+        timeZone: 'America/New_York',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      };
+
+      const formatter = new Intl.DateTimeFormat('en-CA', options);
+      return formatter.format(this.shippingDate());
     });
 
   }
@@ -69,19 +86,13 @@ export class StateService {
   private loadInitialState() {
     this.apiService.getInitialData().subscribe({
       next: value => {
-
         // Set warehouse dropdown and update warehouse settings
         this.warehouseDropdownList.set(["All", ...value]);
         //set location mode
         const location = String(this.localStorage.getItem(SAVED_WAREHOUSE_ID) ?? "All");
-
-
-        console.log(location, "} =======>>");
-
         //Trigger initial data fetch for location
         this.selectedWarehouse.set(location);
-        this.pollForOrders();
-        this.pollForStats();
+        this.pollForUpdate();
       },
       error: () => {
         this.dialog.closeAll();
@@ -92,21 +103,48 @@ export class StateService {
     });
   }
 
-  private loadDataOnFilterChanged(location: string) {
+  private loadDataOnFilterChanged() {
+    this.header.showBuffering.set(true)
+    this.apiService.getOrderUpdate(0,
+      this.localShippingDate(),
+      this.selectedWarehouse()).subscribe({
+      next: (result) => {
+          this.pollTimestamp.set(result.lastTimestamp)
+          console.log(result.orders);
+        console.log(result.lastTimestamp);
+      },
+      error: (err) => {
+        this.dialog.open(ServerNotReachableDialogComponent, {disableClose: true});
+        //this.header.showBuffering.set(false)
+      }
 
-    console.log(" ===>> ",location);
+    })
   }
 
-  private pollForOrders() {
+  /**
+   * Periodically checks for route updates
+   * @private
+   */
+  private pollForUpdate() {
     this.ngZone.runOutsideAngular(() => {
-
-    });
-  }
-
-  private pollForStats() {
-    this.ngZone.runOutsideAngular(() => {
-
-    });
+      this.apiService.pollOrderUpdate(
+        this.pollTimestamp,
+        this.localShippingDate,
+        this.selectedWarehouse)
+        .subscribe({
+          next: (result) => {
+            this.pollTimestamp.set(result.lastTimestamp)
+            console.log(result.orders);
+            console.log(result.lastTimestamp);
+          },
+          error: (err) => {
+            this.dialog.closeAll();
+            this.dialog.open(ServerNotReachableDialogComponent,{
+              disableClose: true,
+            });
+          }
+        });
+    })
   }
 
 }

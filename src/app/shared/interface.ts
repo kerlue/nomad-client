@@ -11,6 +11,12 @@ export interface Stats{
 
 }
 
+
+export interface OrderResult {
+  orders: Orders[];
+  lastTimestamp: number;
+}
+
 export interface Orders {
 
 }
