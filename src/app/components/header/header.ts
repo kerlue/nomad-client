@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Filter } from './filter/filter';
+import { StateService } from '../../services/state.service';
 
 @Component({
   selector: 'app-header',
@@ -11,8 +12,14 @@ import { Filter } from './filter/filter';
         <img class="header__logo" src="/favicon.ico" alt="logo" />
         <span class="header__app-name">NOMAD</span>
       </div>
-      <app-filter></app-filter>
+      <app-filter [shippingDate] = "this.state.shippingDate()"
+                  [selectedWarehouse]="this.state.selectedWarehouse()"
+                  [warehouses] = "this.state.warehouseDropdownList()">
+      </app-filter>
     </div>
   `
 })
-export class Header {}
+export class Header {
+  constructor(protected state: StateService) {
+  }
+}

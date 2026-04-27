@@ -23,9 +23,12 @@ export class ApiService {
   }
 
   public getInitialData() {
-    return this.http.get<InitialState>(`${this.nomadApi}/dock-info`);
+    return this.http.get<string[]>(`${this.nomadApi}/all-warehouses`);
   }
 
+  getAuthentication() {
+    return this.http.get(`${this.authUrl}`);
+  }
 
   public pollForStats(divisionId: WritableSignal<string>) {
     return timer(0, 3000).pipe(

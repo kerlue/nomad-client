@@ -11,11 +11,13 @@ const SAVED_WAREHOUSE_ID = 'warehouseId';
 @Injectable({
   providedIn: 'root',
 })
-export class PlannerStateService {
+
+export class StateService {
   private initialDataLoaded: boolean = false;
+  private tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 1));
+  shippingDate: WritableSignal<Date> = signal<Date>(this.tomorrowDate);
   selectedWarehouse: WritableSignal<string> = signal<string>('');
   warehouseDropdownList: WritableSignal<string[]> = signal<string[]>([]);
-  public warehouse: WritableSignal<string> = signal<string>('BNY');
 
   constructor(
     private apiService: ApiService,
@@ -23,6 +25,29 @@ export class PlannerStateService {
     protected dialog: MatDialog,
     protected localStorage: LocalStorageService,
   ) {
+
+
+    //Check if user is authenticated to make request
+    this.apiService.getAuthentication()
+      .subscribe({
+        next: (value: any) => {
+          //value.username = Math.random().toString(36).substring(2, 10);
+          AuthService.baldorUserId.set(value.username)
+          AuthService.baldorSecret.set(value.secret)
+        },
+        error: (err) => {
+          this.dialog.open(ServerNotReachableDialogComponent, {
+            disableClose: true,
+            data: {
+              disableCancel: true,
+              message: 'Authentication failed. Please try again.',
+              onRetry: () => {
+                window.location.reload();
+              }
+            }
+          });
+        }
+      })
 
     //Load initial data from server if user is authenticated
     effect(() => {
@@ -33,7 +58,7 @@ export class PlannerStateService {
     });
 
     effect(() => {
-      if (this.selectedWarehouse() == '') { return; }
+      if(this.selectedWarehouse() == "") return;
       this.localStorage.setItem(SAVED_WAREHOUSE_ID, this.selectedWarehouse());
       this.loadDataOnFilterChanged(this.selectedWarehouse());
     });
@@ -44,16 +69,17 @@ export class PlannerStateService {
   private loadInitialState() {
     this.apiService.getInitialData().subscribe({
       next: value => {
-        // Set warehouse dropdown and update warehouse settings
-        this.warehouseDropdownList.set(
-          value?.warehouse.map((warehouse: any) => warehouse.divisionId),
-        );
 
+        // Set warehouse dropdown and update warehouse settings
+        this.warehouseDropdownList.set(["All", ...value]);
         //set location mode
-        const location = String(this.localStorage.getItem(SAVED_WAREHOUSE_ID) ?? "101");
+        const location = String(this.localStorage.getItem(SAVED_WAREHOUSE_ID) ?? "All");
+
+
+        console.log(location, "} =======>>");
+
         //Trigger initial data fetch for location
         this.selectedWarehouse.set(location);
-
         this.pollForOrders();
         this.pollForStats();
       },
@@ -68,6 +94,7 @@ export class PlannerStateService {
 
   private loadDataOnFilterChanged(location: string) {
 
+    console.log(" ===>> ",location);
   }
 
   private pollForOrders() {
