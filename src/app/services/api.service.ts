@@ -52,7 +52,7 @@ export class ApiService {
       warehouse
     };
 
-    return this.http.post<OrderResult>(url, input);
+    return this.http.post<Orders[]>(url, input);
   }
 
   pollOrderUpdate(

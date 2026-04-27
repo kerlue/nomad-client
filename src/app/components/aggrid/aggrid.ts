@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { GridStatus } from '../../shared/interface';
+import { GridStatus, Orders } from '../../shared/interface';
 import { GLOBAL_GRID_THEME } from './grid-theme.constant';
 import {
   AllCommunityModule,
@@ -23,7 +23,7 @@ ModuleRegistry.registerModules([AllCommunityModule, RowDragModule]);
       [columnDefs]="colDefs"
       (cellClicked)="onCellClicked($event)"
       [enableCellTextSelection]="true"
-      [rowData]="rowData"
+      [rowData]="orders"
       [theme]="GLOBAL_GRID_THEME"
       (gridReady)="onGridReady($event)"
     />
@@ -31,14 +31,16 @@ ModuleRegistry.registerModules([AllCommunityModule, RowDragModule]);
 })
 export class Aggrid {
   colDefs: ColDef[] = [
-    { headerName: 'Customer Id', field: 'customerNumber', maxWidth: 155, width: 155 },
-    { headerName: 'Order Number', field: 'salesOrderNumber', maxWidth: 165, width: 165 },
+    { headerName: 'Customer Id', field: 'orderId', maxWidth: 155, width: 155 },
+    { headerName: 'Order Number', field: 'customerCode', maxWidth: 165, width: 165 },
     { headerName: 'Status', field: 'salesOrderNumber', flex: 1 },
   ];
 
+
+
   @Input() status!: GridStatus;
   protected readonly GLOBAL_GRID_THEME = GLOBAL_GRID_THEME;
-  rowData: any[] = [];
+  @Input() orders: Orders[] = [];
 
   onGridReady($event: any) {}
 

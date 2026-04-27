@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { LocalStorageService } from './local-storage.service';
 import { ServerNotReachableDialogComponent } from '../components/dialogs/server-not-reachable-dialog.component';
 import { HeaderStateService } from '../components/header/header-state.service';
+import { Orders } from '../shared/interface';
 const DOCK_MODE_KEY = 'dockMode';
 const SAVED_WAREHOUSE_ID = 'warehouseId';
 
@@ -20,6 +21,7 @@ export class StateService {
   selectedWarehouse: WritableSignal<string> = signal<string>('');
   warehouseDropdownList: WritableSignal<string[]> = signal<string[]>([]);
   pollTimestamp: WritableSignal<number> = signal<number>(0);
+  orders: WritableSignal<Orders[]> = signal<Orders[]>([]);
   localShippingDate: Signal<string>;
 
   constructor(
@@ -109,9 +111,8 @@ export class StateService {
       this.localShippingDate(),
       this.selectedWarehouse()).subscribe({
       next: (result) => {
-          this.pollTimestamp.set(result.lastTimestamp)
-          console.log(result.orders);
-        console.log(result.lastTimestamp);
+        this.orders.set(result);
+        //this.pollTimestamp.set(result.lastTimestamp)
       },
       error: (err) => {
         this.dialog.open(ServerNotReachableDialogComponent, {disableClose: true});
@@ -133,13 +134,13 @@ export class StateService {
         this.selectedWarehouse)
         .subscribe({
           next: (result) => {
-            this.pollTimestamp.set(result.lastTimestamp)
-            console.log(result.orders);
-            console.log(result.lastTimestamp);
+            this.orders.set(result);
+            //this.syncIncomingOrders(result.orders)
+            //this.pollTimestamp.set(result.lastTimestamp)
           },
           error: (err) => {
             this.dialog.closeAll();
-            this.dialog.open(ServerNotReachableDialogComponent,{
+            this.dialog.open(ServerNotReachableDialogComponent, {
               disableClose: true,
             });
           }
@@ -147,4 +148,30 @@ export class StateService {
     })
   }
 
+  private syncIncomingOrders(orders: Orders[]) {
+    const ordersById: Record<string, Orders> = Object.fromEntries(
+      orders.map(order => [order.orderId, order])
+    );
+
+    this.orders.update(orders => {
+      orders.map((order) => {
+        if (ordersById[order.orderId]) {
+          const updatedOrder = ordersById[order.orderId];
+          delete ordersById[order.orderId];
+          return {
+            ...updatedOrder
+          };
+        }
+        return order;
+      })
+
+      orders = [...orders, ...Object.values(ordersById)]
+
+     return orders
+        .slice() // avoid mutating original array
+        .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
+        .slice(0, 20);
+
+    })
+  }
 }

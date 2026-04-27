@@ -12,8 +12,6 @@ export class AuthService {
     const userId = AuthService.baldorUserId();
     const token = AuthService.baldorSecret();
 
-    console.log(userId, token);
-
     const updatedReq = req.clone({
       params: req.params
         .set('userId', userId)
