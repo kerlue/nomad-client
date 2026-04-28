@@ -11,6 +11,7 @@ import {
   RowSelectionOptions,
 } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular';
+import { OrderStatusRendererComponent } from './order-status-renderer.component';
 ModuleRegistry.registerModules([AllCommunityModule, RowDragModule]);
 
 @Component({
@@ -33,7 +34,15 @@ export class Aggrid {
   colDefs: ColDef[] = [
     { headerName: 'Customer Id', field: 'orderId', maxWidth: 155, width: 155 },
     { headerName: 'Order Number', field: 'customerCode', maxWidth: 165, width: 165 },
-    { headerName: 'Status', field: 'salesOrderNumber', flex: 1 },
+    {
+      headerName: 'Status',
+      field: 'salesOrderNumber',
+      flex: 1,
+      minWidth: 340,
+      cellRenderer: OrderStatusRendererComponent,
+      sortable: true,
+      filter: true,
+    },
   ];
 
 
