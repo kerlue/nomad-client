@@ -22,15 +22,21 @@ ModuleRegistry.registerModules([AllCommunityModule, RowDragModule]);
     <ag-grid-angular
       style="height: 100%;"
       [columnDefs]="colDefs"
+      [defaultColDef]="defaultColDef"
       (cellClicked)="onCellClicked($event)"
       [enableCellTextSelection]="true"
       [rowData]="orders"
+      [rowHeight]="45"
       [theme]="GLOBAL_GRID_THEME"
       (gridReady)="onGridReady($event)"
     />
   `,
 })
 export class Aggrid {
+  defaultColDef: ColDef = {
+    cellStyle: { display: 'flex', alignItems: 'center' },
+  };
+
   colDefs: ColDef[] = [
     { headerName: 'Customer Id', field: 'orderId', maxWidth: 155, width: 155 },
     { headerName: 'Order Number', field: 'customerCode', maxWidth: 165, width: 165 },
