@@ -36,4 +36,23 @@ body {
   margin: 0;
   height: 100%;
 }
+
+.mat-horizontal-stepper-wrapper{
+  //height: 25px;
+}
+.mat-horizontal-stepper-header-container{
+  //height: 25px;
+}
+
+.mat-step-label{
+  padding: 0px !important;
+  margin:  0px !important;
+  height: 30px !important;
+}
+
+.mat-step-header{
+
+  height: 45px !important;
+}
+
 /* You can add global styles to this file, and also import other style files */

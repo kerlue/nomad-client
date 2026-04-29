@@ -26,7 +26,7 @@ ModuleRegistry.registerModules([AllCommunityModule, RowDragModule]);
       (cellClicked)="onCellClicked($event)"
       [enableCellTextSelection]="true"
       [rowData]="orders"
-      [rowHeight]="45"
+      [rowHeight]="40"
       [theme]="GLOBAL_GRID_THEME"
       (gridReady)="onGridReady($event)"
     />
@@ -34,17 +34,19 @@ ModuleRegistry.registerModules([AllCommunityModule, RowDragModule]);
 })
 export class Aggrid {
   defaultColDef: ColDef = {
-    cellStyle: { display: 'flex', alignItems: 'center' },
+    cellStyle: { display: 'flex', alignItems: 'center' , color: 'black', fontWeight: '400' , fontFamily: 'Roboto, sans-serif'},
   };
 
   colDefs: ColDef[] = [
-    { headerName: 'Customer Id', field: 'orderId', maxWidth: 155, width: 155 },
+
+    { headerName: 'Customer', field: 'customerName',  width: 285 },
     { headerName: 'Order Number', field: 'customerCode', maxWidth: 165, width: 165 },
+    { headerName: 'Sales Order#', field: 'orderId', width: 195 },
     {
       headerName: 'Status',
       field: 'salesOrderNumber',
       flex: 1,
-      minWidth: 340,
+      minWidth: 840,
       cellRenderer: OrderStatusRendererComponent,
       sortable: true,
       filter: true,

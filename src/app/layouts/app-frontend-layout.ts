@@ -3,10 +3,11 @@ import { Aggrid } from '../components/aggrid/aggrid';
 import { GridStatus } from '../shared/interface';
 import { Header } from '../components/header/header';
 import { StateService } from '../services/state.service';
+import { Status } from '../components/status/status';
 
 @Component({
   selector: 'app-app-frontend-layout',
-  imports: [Aggrid, Header],
+  imports: [Aggrid, Header, Status],
   styleUrl: './app-frontend-layout.scss',
   template: `
     <div class="layout">
@@ -15,22 +16,20 @@ import { StateService } from '../services/state.service';
 
       <!-- Status Bar -->
       <div class="status">
-        <span>Status: Connected</span>
+        <app-status></app-status>
       </div>
 
       <!-- Main Content -->
       <main class="content">
-        <app-aggrid [orders]="this.state.orders()" [status]= 'GridStatus.Pending'></app-aggrid>
+        <app-aggrid [orders]="this.state.orders()" [status]="GridStatus.Pending"></app-aggrid>
         <!--<app-aggrid [status]= 'GridStatus.Completed'></app-aggrid> -->
-        <app-aggrid [status]= 'GridStatus.ActionRequired'></app-aggrid>
+        <!--<app-aggrid [status]= 'GridStatus.ActionRequired'></app-aggrid>-->
       </main>
-
     </div>
-  `
+  `,
 })
 export class AppFrontendLayout {
   protected readonly GridStatus = GridStatus;
 
-  constructor(protected state: StateService) {
-  }
+  constructor(protected state: StateService) {}
 }
