@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { GridStatus, Orders } from '../../shared/interface';
+import { Orders } from '../../shared/interface';
 import { GLOBAL_GRID_THEME } from './grid-theme.constant';
 import {
   AllCommunityModule,
@@ -25,10 +25,11 @@ ModuleRegistry.registerModules([AllCommunityModule, RowDragModule]);
       style="height: 100%;"
       [columnDefs]="colDefs"
       [defaultColDef]="defaultColDef"
+      [gridOptions]="gridOptions"
       (cellClicked)="onCellClicked($event)"
       [enableCellTextSelection]="true"
       [rowData]="orders"
-      [rowHeight]="40"
+      [rowHeight]="42"
       [theme]="GLOBAL_GRID_THEME"
       [getRowId]="getRowId"
       (gridReady)="onGridReady($event)"
@@ -36,8 +37,19 @@ ModuleRegistry.registerModules([AllCommunityModule, RowDragModule]);
   `,
 })
 export class Aggrid {
+  gridOptions: any = {
+    suppressCellFocus: true,
+  };
+
   defaultColDef: ColDef = {
-    cellStyle: { display: 'flex', alignItems: 'center', color: 'black', fontWeight: '400', fontFamily: 'Roboto, sans-serif' },
+    cellStyle: {
+      alignItems: 'center',
+      color: 'black',
+      justifyContent: 'center',
+      fontWeight: '400',
+      fontFamily: 'Roboto, sans-serif',
+      marginTop: '4px'
+    },
   };
 
   colDefs: ColDef[] = [
@@ -48,14 +60,15 @@ export class Aggrid {
       headerName: 'Status',
       field: 'salesOrderNumber',
       flex: 1,
-      minWidth: 840,
       cellRenderer: StatusRendererComponent,
       sortable: true,
       filter: true,
+      cellStyle: {
+        marginTop: '0px'
+      },
     },
   ];
 
-  @Input() status!: GridStatus;
   protected readonly GLOBAL_GRID_THEME = GLOBAL_GRID_THEME;
   @Input() orders: Orders[] = [];
   @Output() onRowSelected = new EventEmitter<unknown>();

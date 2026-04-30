@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Aggrid } from '../components/aggrid/aggrid';
-import { GridStatus } from '../shared/interface';
 import { Header } from '../components/header/header';
 import { StateService } from '../services/state.service';
 import { Status } from '../components/status/status';
@@ -27,14 +26,12 @@ import { InfoPanelComponent } from '../components/info-panel/info-panel.componen
       <!-- Main Content -->
       <main class="content">
         <app-aggrid [orders]="this.state.orders()"
-                    [status]="GridStatus.Pending"
                     (onRowSelected) = "onRowSelected($event)"></app-aggrid>
       </main>
     </div>
   `,
 })
 export class AppFrontendLayout {
-  protected readonly GridStatus = GridStatus;
   protected showInfoPanel: number = 0;
   constructor(protected state: StateService) {}
 

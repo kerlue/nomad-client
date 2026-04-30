@@ -4,14 +4,14 @@ import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatIconModule } from '@angular/material/icon';
-import { Orders } from '../../shared/interface';
+import { IntegrationStatus, Orders } from '../../shared/interface';
 
 
 interface Step {
   label: string;
   complete: boolean;
   key: 'SOURCE' | 'ERP' | 'INTEGRATION' | 'ROUTED' | 'SHIPPED';
-  stepStatus: 'OPEN' | 'COMPLETED' | 'PARTIAL' | 'ERROR';
+  stepStatus: IntegrationStatus;
 }
 
 @Component({
@@ -48,8 +48,8 @@ export class StatusRendererComponent implements ICellRendererAngularComp {
 
   stepIcons: string[] = [
     'package_2',              // SOURCE
-    'hub',                // ERP
-    'storage',            // INTEGRATION
+    'webhook',                // ERP
+    'database',            // INTEGRATION
     'pin_drop',           // ROUTED
     'local_shipping',     // SHIPPED
   ];
@@ -108,9 +108,7 @@ export class StatusRendererComponent implements ICellRendererAngularComp {
     steps.push({
       key: 'INTEGRATION',
       label: 'Integrated',
-      stepStatus: order.integrationCompleted == order.integrationCount
-        ? 'COMPLETED' : order.integrationCompleted == 0
-          ? 'OPEN' : 'PARTIAL',
+      stepStatus: order.integrationStatus,
       complete: false,
     });
 

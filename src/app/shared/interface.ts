@@ -1,9 +1,5 @@
 
-export enum GridStatus {
-  Pending = 'pending',
-  Completed = 'completed',
-  ActionRequired = 'action_required'
-}
+export type IntegrationStatus = 'OPEN' | 'COMPLETED' | 'PARTIAL' | 'ERROR'
 
 export interface InitialState{
   warehouse: WarehouseSettings[]
@@ -28,21 +24,20 @@ export interface Orders {
   divisionId: string;
   isDropShipOrder: boolean;
   erpIntegrated: boolean;
-  integrationCompleted: number;
-  integrationCount: number;
   createdDate: string; // ISO datetime string
   shippingDate: string;
 
   source: string;
 
   // integration timestamps from target
-  intranetIntegratedAt: string;
-  ortecIntegratedAt: string;
-  invoicedIntegratedAt: string;
-  waveIntegratedAt: string;
-  driverAppIntegratedAt: string;
-  highJumpIntegratedAt: string;
-  orderVoidedAt: string;
+  intraDbIntegrateAt: string;
+  waveDbIntegratedAt: string;
+  driverDbIntegratedAt: string;
+  hJumpDbIntegratedAt: string;
+  routedAt: string;
+  invoicedAt: string;
+  voidedAt: string;
+  integrationStatus: IntegrationStatus
 }
 
 export interface WarehouseSettings {

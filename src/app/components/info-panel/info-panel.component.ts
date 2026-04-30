@@ -34,7 +34,7 @@ import { OrderTreeDiagram } from './order-tree-diagram/order-tree-diagram';
         </div>
         <div class="popover-body">
           <!-- Column editor content goes here -->
-          <app-order-tree-diagram></app-order-tree-diagram>
+          <app-order-tree-diagram [selectedOrder]="this.state.selectedOrder()"></app-order-tree-diagram>
           <ng-content></ng-content>
         </div>
       </div>

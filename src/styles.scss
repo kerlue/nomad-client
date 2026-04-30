@@ -65,7 +65,7 @@ mat-icon {
 }
 
 .mat-step-header{
-  height: 45px !important;
+  height: 39px !important;
 }
 
 .mat-step-header.cdk-mouse-focused{
@@ -98,7 +98,7 @@ ng-diagram-watermark {
 .mat-stepper-horizontal-line{
   margin-top: 3px !important;
   border-top-width: 2px !important;
-  min-width: 80px !important;
+  //min-width: 50px !important;
 }
 
 
