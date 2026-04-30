@@ -1,0 +1,18 @@
+@use '@angular/material' as mat;
+
+
+.order-stepper{
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.step-icon {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 16px;
+}

@@ -4,6 +4,7 @@
 // Learn more about theming and how to use it for your application's
 // custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
+@import 'ng-diagram/styles.css';
 
 html {
   height: 100%;
@@ -36,7 +37,20 @@ body {
   margin: 0;
   height: 100%;
 }
-
+mat-icon {
+  font-family: 'Material Symbols Outlined' !important;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
 .mat-horizontal-stepper-wrapper{
   //height: 25px;
 }
@@ -51,8 +65,38 @@ body {
 }
 
 .mat-step-header{
-
   height: 45px !important;
 }
+
+.mat-step-header.cdk-mouse-focused{
+  background-color: #cd0f0f !important;
+}
+
+.mat-horizontal-content-container{
+  padding: 0 !important;
+}
+
+
+.mat-step-icon-state-done {
+  background-color: #2e7d32 !important;
+}
+
+.mat-step-icon-selected{
+  background-color: #858585 !important;
+}
+
+.mat-step-icon {
+  background-color: #858585 !important;
+  width: 32px !important;
+  height: 32px !important;
+}
+
+
+.mat-stepper-horizontal-line{
+  margin-top: 3px !important;
+  border-top-width: 2px !important;
+  min-width: 80px !important;
+}
+
 
 /* You can add global styles to this file, and also import other style files */

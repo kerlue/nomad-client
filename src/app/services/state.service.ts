@@ -21,6 +21,7 @@ export class StateService {
   selectedWarehouse: WritableSignal<string> = signal<string>('');
   warehouseDropdownList: WritableSignal<string[]> = signal<string[]>([]);
   pollTimestamp: WritableSignal<number> = signal<number>(0);
+  selectedOrder: WritableSignal<Orders | null> = signal<Orders | null>(null);
   orders: WritableSignal<Orders[]> = signal<Orders[]>([]);
   localShippingDate: Signal<string>;
 
@@ -94,7 +95,7 @@ export class StateService {
         const location = String(this.localStorage.getItem(SAVED_WAREHOUSE_ID) ?? "All");
         //Trigger initial data fetch for location
         this.selectedWarehouse.set(location);
-        this.pollForUpdate();
+        //this.pollForUpdate();
       },
       error: () => {
         this.dialog.closeAll();

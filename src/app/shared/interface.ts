@@ -27,7 +27,9 @@ export interface Orders {
   locationId: string;
   divisionId: string;
   isDropShipOrder: boolean;
-
+  erpIntegrated: boolean;
+  integrationCompleted: number;
+  integrationCount: number;
   createdDate: string; // ISO datetime string
   shippingDate: string;
 
