@@ -21,6 +21,7 @@
     "@angular/router": "^21.2.0",
     "ag-grid-angular": "^33.3.2",
     "ng-diagram": "^1.2.1",
+    "ngx-json-viewer": "^3.2.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

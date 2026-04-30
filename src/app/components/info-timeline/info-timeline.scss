@@ -1,0 +1,27 @@
+.timeline-container {
+  padding: 16px;
+
+  h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
+
+.empty-state {
+  padding: 24px;
+  text-align: center;
+  color: #888;
+}
+
+::ng-deep {
+  .status-completed {
+    color: #2e7d32;
+    font-weight: 500;
+  }
+
+  .status-pending {
+    color: #999;
+    font-style: italic;
+  }
+}

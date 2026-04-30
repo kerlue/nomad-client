@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatIconModule } from '@angular/material/icon';
 import { IntegrationStatus, Orders } from '../../shared/interface';
-
 
 interface Step {
   label: string;
@@ -18,16 +17,18 @@ interface Step {
   selector: 'app-order-status-renderer',
   styleUrls: ['./status-renderer.component.scss'],
   standalone: true,
+  encapsulation: ViewEncapsulation.None,
   imports: [CommonModule, MatStepperModule, MatIconModule],
   template: `
     <mat-stepper
       [linear]="false"
       class="order-stepper"
+      [style]="getLineStyles()"
     >
-      <!-- Override the default number icons -->
       <ng-template matStepperIcon="number" let-index="index">
         <mat-icon
           class="step-icon"
+          [class.partial-border]="steps[index]?.stepStatus === 'PARTIAL'"
           [style.background-color]="getStatusColor(steps[index]?.stepStatus)"
         >
           {{ getStepIcon(index) }}
@@ -36,9 +37,7 @@ interface Step {
 
       @for (step of steps; track step) {
         <mat-step [editable]="false">
-          <ng-template matStepLabel>
-            {{ step.label }}
-          </ng-template>
+          <ng-template matStepLabel>{{ step.label }}</ng-template>
         </mat-step>
       }
     </mat-stepper>
@@ -47,19 +46,17 @@ interface Step {
 export class StatusRendererComponent implements ICellRendererAngularComp {
 
   stepIcons: string[] = [
-    'package_2',              // SOURCE
-    'webhook',                // ERP
-    'database',            // INTEGRATION
-    'pin_drop',           // ROUTED
-    'local_shipping',     // SHIPPED
+    'package_2',
+    'webhook',
+    'database',
+    'pin_drop',
+    'local_shipping',
   ];
 
   protected steps: Step[] = [];
 
   agInit(params: ICellRendererParams): void {
     this.steps = this.getSteps(params.data);
-
-    console.log(params.data);
   }
 
   refresh(params: ICellRendererParams): boolean {
@@ -75,57 +72,36 @@ export class StatusRendererComponent implements ICellRendererAngularComp {
 
   protected getStatusColor(status: Step['stepStatus'] | undefined): string {
     switch (status) {
-      case 'COMPLETED':
-        return '#4caf50';   // green
-      case 'PARTIAL':
-        return '#ff9800';   // orange/amber
-      case 'OPEN':
-        return '#9e9e9e';   // grey
-      case 'ERROR':
-        return '#ff0000';   // red
-      default:
-        return 'transparent';
+      case 'COMPLETED': return '#4caf50';
+      case 'PARTIAL':   return '#9e9e9e';
+      case 'OPEN':      return '#9e9e9e';
+      case 'ERROR':     return '#ff0000';
+      default:          return 'transparent';
     }
   }
 
+  protected getLineColor(index: number): string {
+    const current = this.steps[index]?.stepStatus;
+    if (current === 'ERROR'  ) return '#ff0000';
+    if (current === 'COMPLETED' || current === 'PARTIAL') return '#4caf50';
+    return '#9f9f9f';
+  }
+
+  protected getLineStyles(): Record<string, string> {
+    const styles: Record<string, string> = {};
+    for (let i = 0; i < this.steps.length - 1; i++) {
+      styles[`--line-${i}-color`] = this.getLineColor(i);
+    }
+    return styles;
+  }
+
   private getSteps(order: Orders): Step[] {
-    const steps: Step[] = [];
-
-    steps.push({
-      key: 'SOURCE',
-      label: order.source,
-      stepStatus: 'COMPLETED',
-      complete: true,
-    });
-
-    steps.push({
-      key: 'ERP',
-      label: 'Dynamics',
-      stepStatus:order.erpIntegrated ? 'COMPLETED' : 'OPEN',
-      complete: false,
-    });
-
-    steps.push({
-      key: 'INTEGRATION',
-      label: 'Integrated',
-      stepStatus: order.integrationStatus,
-      complete: false,
-    });
-
-    steps.push({
-      key: 'ROUTED',
-      label: 'Routed',
-      stepStatus: 'OPEN',
-      complete: false,
-    });
-
-    steps.push({
-      key: 'SHIPPED',
-      label: 'Shipped',
-      stepStatus: 'OPEN',
-      complete: true,
-    });
-
-    return steps;
+    return [
+      { key: 'SOURCE',      label: order.source,   stepStatus: 'COMPLETED', complete: true },
+      { key: 'ERP',         label: 'Dynamics',     stepStatus: order.erpIntegrated ? 'COMPLETED' : 'OPEN', complete: false },
+      { key: 'INTEGRATION', label: 'Integrated',   stepStatus: order.integrationStatus, complete: false },
+      { key: 'ROUTED',      label: 'Routed',       stepStatus: order.routedAt ? 'COMPLETED' : 'OPEN', complete: false },
+      { key: 'SHIPPED',     label: 'Shipped',      stepStatus: order.invoicedAt ? 'COMPLETED' : 'OPEN', complete: true },
+    ];
   }
 }

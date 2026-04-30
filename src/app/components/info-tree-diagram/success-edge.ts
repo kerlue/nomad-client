@@ -12,12 +12,11 @@ import {
   template: `
     <ng-diagram-base-edge
       [edge]="edge()"
-      stroke="#e53935"
+      stroke="#008c08"
       [strokeWidth]="2"
-      strokeDasharray="6 4"
     >
       <ng-diagram-base-edge-label id="success-marker" [positionOnEdge]="0.5">
-        <div class="success-x">✕</div>
+        <div class="success-x">✔</div>
       </ng-diagram-base-edge-label>
     </ng-diagram-base-edge>
   `,
@@ -27,8 +26,8 @@ import {
       height: 22px;
       border-radius: 50%;
       background: #fff;
-      border: 2px solid #e53935;
-      color: #e53935;
+      border: 2px solid #008c08;
+      color: #00af0a;
       font-weight: 700;
       font-size: 14px;
       line-height: 1;

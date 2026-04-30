@@ -1,13 +1,15 @@
 import {Component, Input, ViewChild, ElementRef, HostListener, Output, EventEmitter} from '@angular/core';
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
+import {MatTabsModule} from "@angular/material/tabs";
 import { Orders } from '../../shared/interface';
 import { StateService } from '../../services/state.service';
-import { OrderTreeDiagram } from './order-tree-diagram/order-tree-diagram';
+import { OrderTreeDiagram } from '../info-tree-diagram/order-tree-diagram';
+import { InfoTab } from '../info-tab/info-tab';
 
 @Component({
   selector: 'info-panel',
-  imports: [MatIcon, MatIconButton, OrderTreeDiagram],
+  imports: [MatIcon, MatIconButton, MatTabsModule, OrderTreeDiagram, InfoTab],
   styleUrl: './info-panel.component.scss',
   template: `
     <!-- Dark overlay -->
@@ -27,15 +29,18 @@ import { OrderTreeDiagram } from './order-tree-diagram/order-tree-diagram';
         aria-label="Column Editor"
       >
         <div class="popover-header">
-          <span class="popover-title">Column Editor</span>
+          <span class="popover-title">
+             {{ this._selectedOrder?.orderId }}
+            - {{ this._selectedOrder?.customerName }}
+          </span>
           <button mat-icon-button (click)="close()" aria-label="Close">
             <mat-icon>close</mat-icon>
           </button>
         </div>
         <div class="popover-body">
-          <!-- Column editor content goes here -->
-          <app-order-tree-diagram [selectedOrder]="this.state.selectedOrder()"></app-order-tree-diagram>
-          <ng-content></ng-content>
+          @if (isOpen) {
+            <app-info-tab></app-info-tab>
+          }
         </div>
       </div>
     </div>
@@ -45,7 +50,7 @@ export class InfoPanelComponent {
   @ViewChild('popoverHost') popoverHost!: ElementRef;
 
   isOpen = false;
-  @Input() protected _selectedOrder!: Orders | null;
+  protected _selectedOrder!: Orders | null;
 
   @Input()
   set selectedOrder(value: Orders | null) {

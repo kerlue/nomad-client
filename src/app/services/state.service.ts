@@ -95,7 +95,7 @@ export class StateService {
         const location = String(this.localStorage.getItem(SAVED_WAREHOUSE_ID) ?? "All");
         //Trigger initial data fetch for location
         this.selectedWarehouse.set(location);
-        //this.pollForUpdate();
+        this.pollForUpdate();
       },
       error: () => {
         this.dialog.closeAll();

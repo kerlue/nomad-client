@@ -26,6 +26,10 @@ export class ApiService {
     return this.http.get<string[]>(`${this.nomadApi}/all-warehouses`);
   }
 
+  public fetchOrderDetails(orderId: string, divisionId: string) {
+    return this.http.get(`${this.nomadApi}/fetch-order-details/${divisionId}/${orderId}`);
+  }
+
   getAuthentication() {
     return this.http.get(`${this.authUrl}`);
   }
@@ -60,7 +64,7 @@ export class ApiService {
     date: Signal<string>,
     divisionId: WritableSignal<string>
   ) {
-    return timer(5000, 10000).pipe(
+    return timer(5000, 5000).pipe(
       switchMap(() =>
         this.getOrderUpdate(
           pollTimestamp(),
@@ -70,6 +74,7 @@ export class ApiService {
       )
     );
   }
+
 
 }
 

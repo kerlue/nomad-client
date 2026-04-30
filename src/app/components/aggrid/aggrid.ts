@@ -53,13 +53,14 @@ export class Aggrid {
   };
 
   colDefs: ColDef[] = [
-    { headerName: 'Customer', field: 'customerName', width: 285 },
-    { headerName: 'Order Number', field: 'customerCode', maxWidth: 165, width: 165 },
+    { headerName: 'Customer', field: 'customerName', width: 290 },
+    { headerName: 'Order Number', field: 'customerCode', width: 195 },
     { headerName: 'Sales Order#', field: 'orderId', width: 195 },
     {
       headerName: 'Status',
       field: 'salesOrderNumber',
-      flex: 1,
+      //flex: 1,
+      minWidth: 900,
       cellRenderer: StatusRendererComponent,
       sortable: true,
       filter: true,

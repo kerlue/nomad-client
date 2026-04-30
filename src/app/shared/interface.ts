@@ -26,8 +26,8 @@ export interface Orders {
   erpIntegrated: boolean;
   createdDate: string; // ISO datetime string
   shippingDate: string;
-
   source: string;
+  orderNeedsAttention: boolean
 
   // integration timestamps from target
   intraDbIntegrateAt: string;
