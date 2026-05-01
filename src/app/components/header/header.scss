@@ -6,6 +6,7 @@
   height: 59px;
   background-color: #ffffff;
   color: #000000;
+  border-bottom: 1px solid #d5d5d5;
 
   &__brand {
     display: flex;
@@ -14,8 +15,8 @@
   }
 
   &__logo {
-    width: 32px;
-    height: 32px;
+    width: 58px;
+    height: 62px;
     object-fit: contain;
   }
 

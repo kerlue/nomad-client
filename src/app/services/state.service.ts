@@ -8,9 +8,8 @@ import { AuthService } from './auth.service';
 import { LocalStorageService } from './local-storage.service';
 import { ServerNotReachableDialogComponent } from '../components/dialogs/server-not-reachable-dialog.component';
 import { HeaderStateService } from '../components/header/header-state.service';
-import { FilterObject, Orders, OrderStatus } from '../shared/interface';
-const DOCK_MODE_KEY = 'dockMode';
-const SAVED_WAREHOUSE_ID = 'warehouseId';
+import { FilterObject, ORDER_FILTER, Orders, OrderStatus, SAVED_WAREHOUSE_ID } from '../shared/interface';
+
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +18,7 @@ const SAVED_WAREHOUSE_ID = 'warehouseId';
 export class StateService implements OnDestroy {
   private timeoutRef: ReturnType<typeof setTimeout> | null = null;
   private initialDataLoaded: boolean = false;
-  private tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 0));
+  private tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 1));
   shippingDate: WritableSignal<Date> = signal<Date>(this.tomorrowDate);
   selectedWarehouse: WritableSignal<string> = signal<string>('');
   warehouseDropdownList: WritableSignal<string[]> = signal<string[]>([]);
@@ -98,10 +97,13 @@ export class StateService implements OnDestroy {
       next: value => {
         // Set warehouse dropdown and update warehouse settings
         this.warehouseDropdownList.set(["All", ...value]);
-        //set location mode
-        const location = String(this.localStorage.getItem(SAVED_WAREHOUSE_ID) ?? "All");
         //Trigger initial data fetch for location
+        const location = String(this.localStorage.getItem(SAVED_WAREHOUSE_ID) ?? "All");
         this.selectedWarehouse.set(location);
+
+        const orderFilter = JSON.parse(this.localStorage.getItem(ORDER_FILTER) ?? "{}");
+        this.filter.set(orderFilter)
+
         this.pollForUpdate();
       },
       error: () => {
@@ -116,17 +118,13 @@ export class StateService implements OnDestroy {
 
   private loadDataOnFilterChanged() {
     this.header.showBuffering.set(true)
-    this.apiService.getOrderUpdate(0,
-      this.localShippingDate(),
-      this.selectedWarehouse()).subscribe({
+    this.apiService.getOrderUpdate(0, this.localShippingDate(), this.selectedWarehouse(), null)
+      .subscribe({
       next: (result) => {
         this.orders.set(result);
-        console.log(result)
-        //this.pollTimestamp.set(result.lastTimestamp)
       },
       error: (err) => {
         this.dialog.open(ServerNotReachableDialogComponent, {disableClose: true});
-        //this.header.showBuffering.set(false)
         this.autoReloadBrowser(15000)
       }
 
@@ -142,12 +140,11 @@ export class StateService implements OnDestroy {
       this.apiService.pollOrderUpdate(
         this.pollTimestamp,
         this.localShippingDate,
-        this.selectedWarehouse)
+        this.selectedWarehouse,
+        this.globalFilterOrderId)
         .subscribe({
           next: (result) => {
             this.orders.set(result);
-            //this.syncIncomingOrders(result.orders)
-            //this.pollTimestamp.set(result.lastTimestamp)
           },
           error: (err) => {
             this.dialog.closeAll();
@@ -160,32 +157,6 @@ export class StateService implements OnDestroy {
     })
   }
 
-  private syncIncomingOrders(orders: Orders[]) {
-    const ordersById: Record<string, Orders> = Object.fromEntries(
-      orders.map(order => [order.orderId, order])
-    );
-
-    this.orders.update(orders => {
-      orders.map((order) => {
-        if (ordersById[order.orderId]) {
-          const updatedOrder = ordersById[order.orderId];
-          delete ordersById[order.orderId];
-          return {
-            ...updatedOrder
-          };
-        }
-        return order;
-      })
-
-      orders = [...orders, ...Object.values(ordersById)]
-
-     return orders
-        .slice() // avoid mutating original array
-        .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
-        .slice(0, 20);
-
-    })
-  }
 
   private autoReloadBrowser(delay: number) {
     setTimeout(() => {
@@ -196,7 +167,7 @@ export class StateService implements OnDestroy {
 
   private scheduleNextReload(): void {
     const delay = this.msUntilNext2am();
-    console.log(`[ReloadScheduler] Reloading in ${(delay / 1000 / 60).toFixed(1)} min`);
+
     this.timeoutRef = setTimeout(() => {
       window.location.reload();
       this.scheduleNextReload();
@@ -222,5 +193,11 @@ export class StateService implements OnDestroy {
     if (this.timeoutRef !== null) {
       clearTimeout(this.timeoutRef);
     }
+  }
+
+  resetAfterGlobalFilter() {
+    const orderFilter = JSON.parse(this.localStorage.getItem(ORDER_FILTER) ?? "");
+    this.filter.set(orderFilter)
+    this.loadDataOnFilterChanged()
   }
 }

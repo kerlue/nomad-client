@@ -93,6 +93,10 @@ export class Aggrid {
     }
   }
 
+  @Input() set onExportCsv(val: number) {
+    if (val > 0) this.gridApi?.exportDataAsCsv();
+  }
+
   @Input()
   set orders(value: Orders[]) {
     this.currentOrders = value;
@@ -147,7 +151,7 @@ export class Aggrid {
         statusOk = !data.erpIntegrated;
         break;
       case 'integrated':
-        statusOk = data.integrationStatus == 'OPEN';
+        statusOk = data.integrationStatus == 'OPEN' ||  data.integrationStatus == 'PARTIAL';
         break;
       case 'routed':
         statusOk = !data.routedAt;

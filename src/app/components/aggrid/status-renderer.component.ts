@@ -73,14 +73,14 @@ export class StatusRendererComponent implements ICellRendererAngularComp {
       case 'COMPLETED': return '#4caf50';
       case 'PARTIAL':   return '#9e9e9e';
       case 'OPEN':      return '#9e9e9e';
-      case 'ERROR':     return '#c50000';
+      case 'ERROR':     return '#F87171';
       default:          return 'transparent';
     }
   }
 
   protected getLineColor(index: number): string {
     const current = this.steps[index]?.stepStatus;
-    if (current === 'ERROR'  ) return '#c50000';
+    if (current === 'ERROR'  ) return '#F87171';
     if (current === 'COMPLETED' || current === 'PARTIAL') return '#4caf50';
     return '#9f9f9f';
   }

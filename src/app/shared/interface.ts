@@ -2,15 +2,28 @@
 export type IntegrationStatus = 'OPEN' | 'COMPLETED' | 'PARTIAL' | 'ERROR'
 export type OrderSource = 'none' | 'website' | 'oe' | 'pierless' | 'edi'; // must match website
 export type OrderStatus = 'none' | 'dynamics' | 'integrated' | 'routed' | 'shipped';
-
+export const ORDER_FILTER = 'order-filter';
+export const SAVED_WAREHOUSE_ID = 'nomad-global-warehouseId';
 
 export interface InitialState{
   warehouse: WarehouseSettings[]
 }
-export interface Stats{
 
+
+export interface DashboardStat {
+  title: string;
+  headerIcon: string;
+  accentColor: string;
+  stats: StatItem[];
 }
 
+export interface StatItem {
+  icon: string;
+  label: string;
+  value: string | number;
+  trend?: 'up' | 'down' | 'neutral';
+  trendValue?: string;
+}
 
 export interface OrderResult {
   orders: Orders[];

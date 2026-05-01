@@ -1,12 +1,16 @@
 @use '@angular/material' as mat;
 
-// Customize the entire app. Change :root to your selector if you want to scope the styles.
 :host {
   @include mat.button-toggle-overrides((
-    height: 30px
+    height: 30px,
+    background-color: #ffffff,
+    selected-state-background-color: #cdcdcd,
+    selected-state-text-color: #0C447C,
+    divider-color: #dadada,
   ));
 }
 
 img{
   width: 18px;
 }
+

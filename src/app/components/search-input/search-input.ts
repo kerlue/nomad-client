@@ -1,4 +1,4 @@
-import { Component, input, output, signal, effect } from '@angular/core';
+import { Component, input, output, signal, effect, Input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -16,6 +16,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
       <input
         type="text"
         class="search-input"
+        [class.highlight]="highlight()"
+        [value]="value()"
         [placeholder]="placeholder()"
         [formControl]="searchControl"
       />
@@ -36,12 +38,15 @@ export class SearchInput {
   width = input<string>('280px');
   debounce = input<number>(300);
   initialValue = input<string>('');
+  value = input<string>('');
+  highlight = input<boolean>(false);
 
   // Outputs
   valueChange = output<string>();
   cleared = output<void>();
 
   searchControl = new FormControl('');
+
 
   constructor() {
     // Set initial value when provided

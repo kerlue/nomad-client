@@ -1,7 +1,9 @@
 .layout {
   display: grid;
-  grid-template-rows: 0 60px 119px 52px 1fr;
+  grid-template-rows: 0 32px auto 56px 1fr;
   height: 100vh;
+
+  background-color: #F5F5F5;
 }
 
 

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,7 +10,6 @@ import { StateService } from '../../services/state.service';
 import { AuthService } from '../../services/auth.service';
 import { ServerNotReachableDialogComponent } from '../dialogs/server-not-reachable-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { OperationFailedDialog } from '../dialogs/operation-failed-dialog.component';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { Orders } from '../../shared/interface';
 import { SearchInput } from '../search-input/search-input';
@@ -57,8 +56,7 @@ import { SearchInput } from '../search-input/search-input';
   `,
 })
 export class InfoOrderDetails implements OnInit {
-  searchQuery = '';
-  protected orderData: any;
+  private orderData: any;
   protected filteredData: any;
   protected loading = false;
   @Input() selectedOrder!: Orders | null;
@@ -67,6 +65,7 @@ export class InfoOrderDetails implements OnInit {
     protected api: ApiService,
     protected state: StateService,
     protected dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -143,6 +142,7 @@ export class InfoOrderDetails implements OnInit {
     const orderId = this.state.selectedOrder()?.orderId;
     const divisionId = this.state.selectedOrder()?.divisionId;
     const isIntegrated = this.state.selectedOrder()?.erpIntegrated;
+
     if (!orderId || !divisionId || !isIntegrated) {
       return;
     }
@@ -151,11 +151,13 @@ export class InfoOrderDetails implements OnInit {
     this.api.fetchOrderDetails(orderId, divisionId).subscribe({
       next: (value: any) => {
         this.orderData = value;
-        this.loading = false;
         this.onSearch('')
+        this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.loading = false;
+        this.cdr.detectChanges();
       },
     });
   }

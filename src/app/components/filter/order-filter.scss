@@ -1,0 +1,68 @@
+
+
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 6px;
+
+}
+
+.filter-left {
+  display: flex;
+  align-items: center;
+  column-gap: 18px;
+  margin-left: 18px;
+}
+
+.filter-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 18px;
+}
+
+.filter-left,
+.filter-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+
+
+// Compact density + hover for all action buttons
+.action-btn {
+  background-color: white;
+  border-color: #dadada;
+  height: 32px;
+  line-height: 32px;
+  font-size: 13px;
+  padding: 0 20px;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+
+  .mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+    border-color: rgba(0, 0, 0, 0.38);
+  }
+}
+
+
+
+

@@ -13,7 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { GlobalSearchPopupComponent } from '../../global-search/global-search-popup.component';
 
 @Component({
-  selector: 'app-filter',
+  selector: 'app-order-filter',
   styleUrl: './filter.scss',
   imports: [
     MatFormFieldModule,

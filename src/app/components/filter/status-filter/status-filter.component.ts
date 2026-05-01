@@ -2,8 +2,9 @@ import { Component, effect, Input } from '@angular/core';
 import {MatButtonToggle, MatButtonToggleChange, MatButtonToggleGroup} from "@angular/material/button-toggle";
 import {MatTooltip} from "@angular/material/tooltip";
 import { StateService } from '../../../services/state.service';
-import { FilterObject, OrderStatus } from '../../../shared/interface';
+import { FilterObject, ORDER_FILTER, OrderStatus } from '../../../shared/interface';
 import { MatIcon } from '@angular/material/icon';
+import { LocalStorageService } from '../../../services/local-storage.service';
 
 @Component({
   selector: 'app-status-filter',
@@ -17,22 +18,22 @@ import { MatIcon } from '@angular/material/icon';
       (change)="onToggleChange($event)"
       [hideSingleSelectionIndicator]="true"
     >
-      <mat-button-toggle value="dynamics">
+      <mat-button-toggle [matTooltip]="'Show Orders NOT in Dynamics'" value="dynamics">
         <mat-icon>webhook</mat-icon>
         Dynamics
       </mat-button-toggle>
 
-      <mat-button-toggle value="integrated">
+      <mat-button-toggle [matTooltip]="'Show Orders NOT integrated'" value="integrated">
         <mat-icon>database</mat-icon>
         Integrated
       </mat-button-toggle>
 
-      <mat-button-toggle value="routed">
+      <mat-button-toggle [matTooltip]="'Show Orders NOT routed'" value="routed">
         <mat-icon>pin_drop</mat-icon>
         Routed
       </mat-button-toggle>
 
-      <mat-button-toggle value="shipped">
+      <mat-button-toggle [matTooltip]="'Show Orders NOT shipped'" value="shipped">
         <mat-icon>local_shipping</mat-icon>
         Shipped
       </mat-button-toggle>
@@ -43,8 +44,14 @@ export class StatusFilterComponent {
   selectedValue: OrderStatus = 'none';
   lastSelectedValue: OrderStatus = 'none';
 
-  constructor(protected state: StateService) {}
+  constructor(protected state: StateService,
+              protected localStorage: LocalStorageService) {}
 
+  @Input()
+  set filter(value: FilterObject) {
+    this.selectedValue = value.orderStatus;
+    this.lastSelectedValue = this.selectedValue
+  }
 
   onToggleChange(event: MatButtonToggleChange) {
     this.selectedValue = event.value as OrderStatus;
@@ -62,5 +69,8 @@ export class StatusFilterComponent {
       ...filter,
       orderStatus: this.selectedValue,
     }));
+
+    const filterState = JSON.stringify(this.state.filter())
+    this.localStorage.setItem(ORDER_FILTER, filterState);
   }
 }

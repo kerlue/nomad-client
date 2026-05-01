@@ -1,0 +1,86 @@
+.card {
+  border: 1px solid rgb(198, 198, 198);
+  border-radius: 14px;
+  padding: 8px;
+  max-height: 90px;
+  overflow: hidden;
+  transition: transform .2s ease, box-shadow .2s ease;
+  cursor: pointer;
+  background-color: white;
+
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 28px rgba(0,0,0,.11);
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(16px) scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.card-title {
+  margin-left: 6px;
+  font-weight: 500;
+  font-size: clamp(10px, 2.5vw, 14px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.stat-grid {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  margin-top: 6px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.stat-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  white-space: nowrap;
+  padding: 2px 6px;
+  min-width: 0;
+}
+
+.stat-meta img {
+  width: 14px;
+  height: 14px;
+}
+
+.row-label {
+  display: inline-block;
+  font-size: clamp(8px, 1.5vw, 10px);
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 99px;
+  background: #E6F1FB;
+  color: #0C447C;
+  letter-spacing: .02em;
+  margin-bottom: 4px;
+
+}
+
+.error {
+  background: #f63b83 !important;
+  color: #fff;
+}
+
+
+.row-value {
+  margin-left: 2px;
+  font-size: clamp(11px, 2vw, 16px);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}

@@ -21,14 +21,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   selector: 'app-global-search-popup',
   standalone: true,
   imports: [
-    MatProgressBar,
-    MatFormField,
-    MatIcon,
-    MatIconButton,
-    MatInput,
     FormsModule,
     AgGridAngular,
-    MatPrefix,
     SearchInput,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -103,8 +97,11 @@ export class GlobalSearchPopupComponent {
   ) {}
 
   onCellClicked(order: CellClickedEvent<Orders>) {
-    this.state.globalFilterOrderId.set(order.data?.orderId ?? null)
-    this.state.orders.set([order.value])
+    if(order.data){
+      this.state.globalFilterOrderId.set(order.data.orderId)
+      this.state.filter.set({orderSource: "none", orderStatus: "none", queryString: ""})
+      this.state.orders.set([order.data])
+    }
 
     this.dialogRef.close();
   }
@@ -121,7 +118,8 @@ export class GlobalSearchPopupComponent {
       query: searchTerm,
     };
 
-    this.apiService.globalOrderSearch(param).subscribe((result: Orders[]) => {
+    this.apiService.globalOrderSearch(param)
+      .subscribe((result: Orders[]) => {
       this.rowData = result;
       this.cdr.detectChanges();
     });
