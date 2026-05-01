@@ -9,6 +9,8 @@ import { MatButton } from '@angular/material/button';
 import {MatIcon} from "@angular/material/icon";
 import { StateService } from '../../../services/state.service';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { GlobalSearchPopupComponent } from '../../global-search/global-search-popup.component';
 
 @Component({
   selector: 'app-filter',
@@ -67,7 +69,7 @@ export class Filter {
   @Input() selectedWarehouse!: string;
   @Input() shippingDate!: Date;
 
-  constructor(protected state: StateService) {}
+  constructor(protected state: StateService, protected dialog: MatDialog) {}
 
   onSelect(selectedValue: string) {
     this.state.selectedWarehouse.set(selectedValue);
@@ -77,7 +79,12 @@ export class Filter {
     return this.warehouses[this.warehouses.findIndex((val) => val == this.selectedWarehouse) ?? 0];
   }
 
-  searchAllOrders() {}
+  searchAllOrders() {
+    this.dialog.open(GlobalSearchPopupComponent, {
+      width: '60vw', maxWidth: '60vw',
+      height: '70vh', maxHeight: '70vh',
+    });
+  }
 
   onDateChangedEvent(type: string, event: MatDatepickerInputEvent<Date>) {
     this.state.shippingDate.set(event.value ?? new Date(1900, 0, 1));

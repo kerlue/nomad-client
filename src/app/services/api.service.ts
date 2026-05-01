@@ -76,6 +76,9 @@ export class ApiService {
   }
 
 
+  globalOrderSearch(input: { query: any }) {
+    return this.http.post<Orders[]>(`${this.nomadApi}/global-order-search`, input);
+  }
 }
 
 

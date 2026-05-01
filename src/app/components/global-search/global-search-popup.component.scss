@@ -1,0 +1,19 @@
+.global-search-container {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  padding-top: 12px;
+  grid-template-rows: auto 1fr;
+
+}
+
+.search-container{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+mat-form-field{
+  width: 320px;
+  justify-self: center;
+}

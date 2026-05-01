@@ -1,4 +1,6 @@
-import { computed, effect, Injectable, NgZone, Signal, signal, WritableSignal } from '@angular/core';
+import { computed, effect, Injectable, NgZone, OnDestroy, Signal, signal, WritableSignal } from '@angular/core';
+import { toZonedTime, fromZonedTime } from 'date-fns-tz';
+import { addDays, setHours, setMinutes, setSeconds, setMilliseconds } from 'date-fns';
 
 import { ApiService } from './api.service';
 import {MatDialog} from "@angular/material/dialog";
@@ -14,13 +16,15 @@ const SAVED_WAREHOUSE_ID = 'warehouseId';
   providedIn: 'root',
 })
 
-export class StateService {
+export class StateService implements OnDestroy {
+  private timeoutRef: ReturnType<typeof setTimeout> | null = null;
   private initialDataLoaded: boolean = false;
-  private tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 1));
+  private tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 0));
   shippingDate: WritableSignal<Date> = signal<Date>(this.tomorrowDate);
   selectedWarehouse: WritableSignal<string> = signal<string>('');
   warehouseDropdownList: WritableSignal<string[]> = signal<string[]>([]);
   pollTimestamp: WritableSignal<number> = signal<number>(0);
+  globalFilterOrderId: WritableSignal<string | null> = signal<string | null>(null);
   selectedOrder: WritableSignal<Orders | null> = signal<Orders | null>(null);
   orders: WritableSignal<Orders[]> = signal<Orders[]>([]);
   filter: WritableSignal<FilterObject> = signal<FilterObject>({queryString: "", orderSource:"none", orderStatus: 'none'});
@@ -34,6 +38,8 @@ export class StateService {
     protected localStorage: LocalStorageService,
   ) {
 
+    //Reload the client to look at next deliver order date
+    this.scheduleNextReload();
 
     //Check if user is authenticated to make request
     this.apiService.getAuthentication()
@@ -103,6 +109,7 @@ export class StateService {
         this.dialog.open(ServerNotReachableDialogComponent, {
           disableClose: true,
         });
+        this.autoReloadBrowser(15000)
       },
     });
   }
@@ -114,13 +121,13 @@ export class StateService {
       this.selectedWarehouse()).subscribe({
       next: (result) => {
         this.orders.set(result);
-
         console.log(result)
         //this.pollTimestamp.set(result.lastTimestamp)
       },
       error: (err) => {
         this.dialog.open(ServerNotReachableDialogComponent, {disableClose: true});
         //this.header.showBuffering.set(false)
+        this.autoReloadBrowser(15000)
       }
 
     })
@@ -147,6 +154,7 @@ export class StateService {
             this.dialog.open(ServerNotReachableDialogComponent, {
               disableClose: true,
             });
+            this.autoReloadBrowser(5000)
           }
         });
     })
@@ -177,5 +185,42 @@ export class StateService {
         .slice(0, 20);
 
     })
+  }
+
+  private autoReloadBrowser(delay: number) {
+    setTimeout(() => {
+      window.location.reload();
+    }, delay);
+  }
+
+
+  private scheduleNextReload(): void {
+    const delay = this.msUntilNext2am();
+    console.log(`[ReloadScheduler] Reloading in ${(delay / 1000 / 60).toFixed(1)} min`);
+    this.timeoutRef = setTimeout(() => {
+      window.location.reload();
+      this.scheduleNextReload();
+    }, delay);
+  }
+
+  private msUntilNext2am(): number {
+    const now = new Date();
+    const TZ = 'America/New_York';
+
+
+    // Build 2 AM today in ET, then convert to UTC
+    const zonedNow = toZonedTime(now, TZ);
+    let target = setMilliseconds(setSeconds(setMinutes(setHours(zonedNow, 2), 30), 0), 0);
+    const targetUtc = fromZonedTime(target, TZ);
+
+    // If already past 2 AM ET today, push to tomorrow
+    const finalUtc = targetUtc <= now ? addDays(targetUtc, 1) : targetUtc;
+    return finalUtc.getTime() - now.getTime();
+  }
+
+  ngOnDestroy(): void {
+    if (this.timeoutRef !== null) {
+      clearTimeout(this.timeoutRef);
+    }
   }
 }

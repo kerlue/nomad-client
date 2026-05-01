@@ -35,7 +35,7 @@ interface Step {
         </mat-icon>
       </ng-template>
 
-      @for (step of steps; track step) {
+      @for (step of steps; track step.key) {
         <mat-step [editable]="false">
           <ng-template matStepLabel>{{ step.label }}</ng-template>
         </mat-step>
