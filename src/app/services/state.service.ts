@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 import { LocalStorageService } from './local-storage.service';
 import { ServerNotReachableDialogComponent } from '../components/dialogs/server-not-reachable-dialog.component';
 import { HeaderStateService } from '../components/header/header-state.service';
-import { Orders } from '../shared/interface';
+import { FilterObject, Orders, OrderStatus } from '../shared/interface';
 const DOCK_MODE_KEY = 'dockMode';
 const SAVED_WAREHOUSE_ID = 'warehouseId';
 
@@ -23,6 +23,7 @@ export class StateService {
   pollTimestamp: WritableSignal<number> = signal<number>(0);
   selectedOrder: WritableSignal<Orders | null> = signal<Orders | null>(null);
   orders: WritableSignal<Orders[]> = signal<Orders[]>([]);
+  filter: WritableSignal<FilterObject> = signal<FilterObject>({queryString: "", orderSource:"none", orderStatus: 'none'});
   localShippingDate: Signal<string>;
 
   constructor(
@@ -113,6 +114,8 @@ export class StateService {
       this.selectedWarehouse()).subscribe({
       next: (result) => {
         this.orders.set(result);
+
+        console.log(result)
         //this.pollTimestamp.set(result.lastTimestamp)
       },
       error: (err) => {

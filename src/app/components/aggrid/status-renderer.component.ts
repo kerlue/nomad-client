@@ -60,13 +60,11 @@ export class StatusRendererComponent implements ICellRendererAngularComp {
   }
 
   refresh(params: ICellRendererParams): boolean {
+    this.steps = this.getSteps(params.data);
     return true;
   }
 
   protected getStepIcon(index: number): string {
-    if (this.steps[index]?.stepStatus === 'ERROR') {
-      return 'warning';
-    }
     return this.stepIcons[index];
   }
 
@@ -75,14 +73,14 @@ export class StatusRendererComponent implements ICellRendererAngularComp {
       case 'COMPLETED': return '#4caf50';
       case 'PARTIAL':   return '#9e9e9e';
       case 'OPEN':      return '#9e9e9e';
-      case 'ERROR':     return '#ff0000';
+      case 'ERROR':     return '#c50000';
       default:          return 'transparent';
     }
   }
 
   protected getLineColor(index: number): string {
     const current = this.steps[index]?.stepStatus;
-    if (current === 'ERROR'  ) return '#ff0000';
+    if (current === 'ERROR'  ) return '#c50000';
     if (current === 'COMPLETED' || current === 'PARTIAL') return '#4caf50';
     return '#9f9f9f';
   }
@@ -96,12 +94,14 @@ export class StatusRendererComponent implements ICellRendererAngularComp {
   }
 
   private getSteps(order: Orders): Step[] {
+    const openOrError = (): IntegrationStatus => order.orderNeedsAttention ? 'ERROR' : 'OPEN';
+
     return [
       { key: 'SOURCE',      label: order.source,   stepStatus: 'COMPLETED', complete: true },
-      { key: 'ERP',         label: 'Dynamics',     stepStatus: order.erpIntegrated ? 'COMPLETED' : 'OPEN', complete: false },
-      { key: 'INTEGRATION', label: 'Integrated',   stepStatus: order.integrationStatus, complete: false },
-      { key: 'ROUTED',      label: 'Routed',       stepStatus: order.routedAt ? 'COMPLETED' : 'OPEN', complete: false },
-      { key: 'SHIPPED',     label: 'Shipped',      stepStatus: order.invoicedAt ? 'COMPLETED' : 'OPEN', complete: true },
+      { key: 'ERP',         label: 'Dynamics',     stepStatus: order.erpIntegrated ? 'COMPLETED' : openOrError(), complete: false },
+      { key: 'INTEGRATION', label: 'Integrated',   stepStatus: order.integrationStatus === 'OPEN' ? openOrError() : order.integrationStatus, complete: false },
+      { key: 'ROUTED',      label: 'Routed',       stepStatus: order.routedAt ? 'COMPLETED' : openOrError(), complete: false },
+      { key: 'SHIPPED',     label: 'Shipped',      stepStatus: order.invoicedAt ? 'COMPLETED' : openOrError(), complete: true },
     ];
   }
 }

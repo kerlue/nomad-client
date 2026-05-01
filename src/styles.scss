@@ -59,13 +59,14 @@ mat-icon {
 }
 
 .mat-step-label{
-  padding: 0px !important;
-  margin:  0px !important;
+  padding: 0 !important;
+  margin:  0 !important;
   height: 30px !important;
 }
 
 .mat-step-header{
   height: 39px !important;
+  min-width: 100px !important;
 }
 
 .mat-step-header.cdk-mouse-focused{
@@ -91,14 +92,12 @@ mat-icon {
   height: 32px !important;
 }
 
-ng-diagram-watermark {
-  display: none !important;
-}
 
 .mat-stepper-horizontal-line{
   margin-top: 3px !important;
   border-top-width: 2px !important;
-  //min-width: 50px !important;
+  //min-width: 150px !important;
+
 }
 
 

@@ -1,5 +1,8 @@
 
 export type IntegrationStatus = 'OPEN' | 'COMPLETED' | 'PARTIAL' | 'ERROR'
+export type OrderSource = 'none' | 'website' | 'oe' | 'pierless' | 'edi'; // must match website
+export type OrderStatus = 'none' | 'dynamics' | 'integrated' | 'routed' | 'shipped';
+
 
 export interface InitialState{
   warehouse: WarehouseSettings[]
@@ -42,4 +45,10 @@ export interface Orders {
 
 export interface WarehouseSettings {
   divisionId: string;
+}
+
+export interface FilterObject {
+  queryString: string;
+  orderSource: OrderSource;
+  orderStatus: OrderStatus;
 }

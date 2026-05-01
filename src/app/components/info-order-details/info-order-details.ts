@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { OperationFailedDialog } from '../dialogs/operation-failed-dialog.component';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { Orders } from '../../shared/interface';
+import { SearchInput } from '../search-input/search-input';
 
 @Component({
   selector: 'app-info-order-details',
@@ -24,6 +25,7 @@ import { Orders } from '../../shared/interface';
     MatProgressSpinnerModule,
     FormsModule,
     NgxJsonViewerModule,
+    SearchInput,
   ],
   styleUrl: './info-order-details.scss',
   template: `
@@ -34,21 +36,12 @@ import { Orders } from '../../shared/interface';
         </div>
       }
       <mat-toolbar class="toolbar">
-        <div class="search-wrapper">
-          <mat-icon class="search-icon">search</mat-icon>
-          <input
-            type="text"
-            class="search-input"
-            placeholder="Search keys or values..."
-            [(ngModel)]="searchQuery"
-            (ngModelChange)="onSearch()"
-          />
-          @if (searchQuery) {
-            <button class="clear-btn" type="button" aria-label="Clear" (click)="clearSearch()">
-              <mat-icon>close</mat-icon>
-            </button>
-          }
-        </div>
+        <app-search-input
+          placeholder="Search order..."
+          [debounce]="400"
+          (valueChange)="onSearch($event)"
+          (cleared)="clearSearch()"
+        />
 
         <span class="spacer"></span>
 
@@ -76,27 +69,24 @@ export class InfoOrderDetails implements OnInit {
     protected dialog: MatDialog,
   ) {}
 
-
-
   ngOnInit(): void {
     this.loadOrder();
   }
 
-  onSearch(): void {
-    this.applyFilter();
+  onSearch(inputStr: string): void {
+    this.applyFilter(inputStr);
   }
 
   clearSearch(): void {
-    this.searchQuery = '';
-    this.applyFilter();
+    this.applyFilter('');
   }
 
   onRefresh(): void {
     this.loadOrder();
   }
 
-  private applyFilter(): void {
-    const query = this.searchQuery.trim().toLowerCase();
+  private applyFilter(str: string): void {
+    const query = str.trim().toLowerCase();
     if (!query) {
       this.filteredData = this.orderData;
       return;
@@ -161,13 +151,13 @@ export class InfoOrderDetails implements OnInit {
     this.api.fetchOrderDetails(orderId, divisionId).subscribe({
       next: (value: any) => {
         this.orderData = value;
-        this.applyFilter();
         this.loading = false;
-        console.log(value);
+        this.onSearch('')
       },
       error: (err) => {
         this.loading = false;
       },
     });
   }
+
 }

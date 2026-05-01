@@ -40,7 +40,8 @@ export class InfoTimeline {
 
   // Map of field name -> human-readable event label
   private readonly timelineFields: { field: keyof Orders; label: string }[] = [
-    { field: 'intraDbIntegrateAt', label: 'Intra DB' },
+    { field: 'createdDate', label: 'Created' },
+    { field: 'intraDbIntegrateAt', label: 'Intracloud DB' },
     { field: 'waveDbIntegratedAt', label: 'Wave DB' },
     { field: 'driverDbIntegratedAt', label: 'Driver DB' },
     { field: 'hJumpDbIntegratedAt', label: 'HighJump DB' },
