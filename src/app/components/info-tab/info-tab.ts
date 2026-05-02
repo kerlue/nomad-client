@@ -38,6 +38,16 @@ import { InfoTimeline } from '../info-timeline/info-timeline';
 
       <mat-tab>
         <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">receipt_long</mat-icon>
+          Logs
+        </ng-template>
+        <ng-template matTabContent>
+          <p>todo: Fetch logs from t_api_logs.</p>
+        </ng-template>
+      </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
           <mat-icon class="tab-icon">schedule</mat-icon>
           Timeline
         </ng-template>
@@ -46,15 +56,6 @@ import { InfoTimeline } from '../info-timeline/info-timeline';
         </ng-template>
       </mat-tab>
 
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <mat-icon class="tab-icon">receipt_long</mat-icon>
-          Logs
-        </ng-template>
-        <ng-template matTabContent>
-          <p>todo: Fetch logs from t_api_logs.</p>
-        </ng-template>
-      </mat-tab>
 
       <mat-tab>
         <ng-template mat-tab-label>

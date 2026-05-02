@@ -63,7 +63,7 @@ export class Dashboard {
         },
         {
           icon: 'person_off',
-          label: 'Invoiced',
+          label: 'Shipped',
           value: '2332',
           trend: 'down',
           trendValue: '-0.3%',

@@ -58,7 +58,6 @@ export class ApiService {
       globalFilterOrderId
     };
 
-    console.log(input)
     return this.http.post<Orders[]>(url, input);
   }
 

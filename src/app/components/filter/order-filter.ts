@@ -20,7 +20,7 @@ import { OperationSuccessfulDialog } from '../dialogs/operation-successful-dialo
       <div class="filter-left">
 
         <app-search-input
-          placeholder="Search..."
+          placeholder="Filter..."
           [value]="this.state.globalFilterOrderId() ?? ''"
           [highlight]="this.state.globalFilterOrderId() != null"
           [debounce]="400"
