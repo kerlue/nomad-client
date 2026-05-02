@@ -9,20 +9,14 @@ export interface InitialState{
   warehouse: WarehouseSettings[]
 }
 
-
-export interface DashboardStat {
-  title: string;
-  headerIcon: string;
-  accentColor: string;
-  stats: StatItem[];
+export interface WarehouseSettings {
+  divisionId: string;
 }
 
-export interface StatItem {
-  icon: string;
-  label: string;
-  value: string | number;
-  trend?: 'up' | 'down' | 'neutral';
-  trendValue?: string;
+export interface FilterObject {
+  queryString: string;
+  orderSource: OrderSource;
+  orderStatus: OrderStatus;
 }
 
 export interface OrderResult {
@@ -56,12 +50,13 @@ export interface Orders {
   integrationStatus: IntegrationStatus
 }
 
-export interface WarehouseSettings {
-  divisionId: string;
+export interface Stats {
+  title: string;
+  position: number;
+  stats: StatItem[];
 }
 
-export interface FilterObject {
-  queryString: string;
-  orderSource: OrderSource;
-  orderStatus: OrderStatus;
+export interface StatItem {
+  label: string;
+  value: string | number;
 }

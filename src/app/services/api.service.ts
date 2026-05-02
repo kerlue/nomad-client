@@ -8,7 +8,7 @@ import {
 import {HttpClient} from "@angular/common/http";
 import {switchMap} from "rxjs/operators";
 import { environment } from '../environments/environment';
-import { InitialState, OrderResult, Orders, DashboardStat } from '../shared/interface';
+import { InitialState, OrderResult, Orders, Stats } from '../shared/interface';
 
 @Injectable({
   providedIn: 'root',
@@ -34,14 +34,6 @@ export class ApiService {
     return this.http.get(`${this.authUrl}`);
   }
 
-  public pollForStats(divisionId: WritableSignal<string>) {
-    return timer(0, 3000).pipe(
-      switchMap(() => {
-        let url: string = `${this.nomadApi}/warehouse-stats/${divisionId()}`;
-        return this.http.get<DashboardStat>(url);
-      }),
-    );
-  }
 
   getOrderUpdate(
     timestamp: number,
@@ -51,12 +43,7 @@ export class ApiService {
   ) {
     const url = `${this.nomadApi}/poll-orders`;
 
-    const input = {
-      timestamp,
-      shippingDate,
-      warehouse,
-      globalFilterOrderId
-    };
+    const input = { timestamp, shippingDate, warehouse, globalFilterOrderId };
 
     return this.http.post<Orders[]>(url, input);
   }
@@ -74,6 +61,25 @@ export class ApiService {
     );
   }
 
+  getStatsUpdate(shippingDate: string,
+                 warehouse: string,) {
+    const url = `${this.nomadApi}/poll-stats`;
+    const input = { shippingDate, warehouse };
+    return this.http.post<Stats[]>(url, input);
+  }
+
+  pollStatsUpdate(
+    date: Signal<string>,
+    divisionId: WritableSignal<string>,
+  ) {
+    return timer(5000, 5000).pipe(
+      switchMap(() =>
+        this.getStatsUpdate(date(), divisionId()),
+      ),
+    );
+  }
+
+
   globalOrderSearch(input: { query: any }) {
     return this.http.post<Orders[]>(`${this.nomadApi}/global-order-search`, input);
   }
@@ -82,6 +88,9 @@ export class ApiService {
   triggerIntegration(orders: Orders[]) {
     return this.http.post<Orders[]>(`${this.nomadApi}/re-trigger-orders`, orders);
   }
+
+
+
 }
 
 

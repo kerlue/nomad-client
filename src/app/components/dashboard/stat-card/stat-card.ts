@@ -1,19 +1,17 @@
 import { Component, Input } from '@angular/core';
-import { DashboardStat, StatItem } from '../../../shared/interface';
+import { Stats, StatItem } from '../../../shared/interface';
 
 @Component({
   selector: 'app-stat-card',
   imports: [],
   styleUrl: './stat-card.scss',
   template: `
-    <article class="card" [style.--accent]="stat.accentColor">
-      <!-- ── Header ─────────────────────────────── -->
+    <article class="card">
       <header class="card-header">
-        <img [src]="stat.headerIcon" />
+        <img [src]="getImage(stat.position)" />
         <span class="card-title">{{ stat.title }}</span>
       </header>
 
-      <!-- ── Stat rows ───────────────────────────── -->
       <div class="stat-grid">
         @for (item of stat.stats; track item.label) {
           <div class="stat-meta">
@@ -26,30 +24,36 @@ import { DashboardStat, StatItem } from '../../../shared/interface';
   `,
 })
 export class StatCard {
-  @Input({ required: true }) stat!: DashboardStat;
+  @Input({ required: true }) stat!: Stats;
 
-  trendIcon(trend?: string): string {
-    if (trend === 'up') return 'trending_up';
-    if (trend === 'down') return 'trending_down';
-    return 'remove';
-  }
-
-  hasError(item: StatItem, stat: DashboardStat) {
+  hasError(item: StatItem, stat: Stats) {
 
     //Last sync checker
-    const isLastSynced = stat.title === "Last Synced";
+    const isLastSynced = stat.title === "Query Latency";
     const lastSec = Number(String(item.value).replace(/[^0-9.-]/g, ""));
-    const isStale = lastSec > 2 * 60;
+    const isStale = lastSec > 15.0 // if more than 15sec warn
+
     if (isLastSynced && isStale) return true;
 
     //Average integration time
     const isAvgIntSynced = stat.title === "Avg. Integration Time";
-    const AvgLastSec = Number(String(item.value).replace(/[^0-9.-]/g, ""));
-    const isAvgStale = AvgLastSec > 2 * 60;
-    if (isAvgIntSynced && isAvgStale) return true;
+    const avgLastSec = Number(String(item.value).replace(/[^0-9.-]/g, ""));
+    const isAvgStale = avgLastSec > 2 * 60; //2minutes
 
+    console.log(lastSec)
+
+
+    if (isAvgIntSynced && isAvgStale) return true;
 
     //Check if label has error
     return item.label.toLowerCase().includes('error');
+  }
+
+  getImage(position: number) {
+    if(position == 0){
+
+    }
+
+    return "package_2.svg"
   }
 }

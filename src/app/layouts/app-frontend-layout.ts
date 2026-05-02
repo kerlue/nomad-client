@@ -18,7 +18,7 @@ import { Dashboard } from '../components/dashboard/dashboard';
       <!-- Top Navigation -->
       <app-header></app-header>
       <!-- Status Bar -->
-      <app-dashboard></app-dashboard>
+      <app-dashboard [stats] = "this.state.stats()"></app-dashboard>
       <!-- Status Bar -->
       <app-order-filter (onExportCsv)="onExportCsv = onExportCsv + 1"></app-order-filter>
       <!-- Main Content -->

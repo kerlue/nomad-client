@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 import { LocalStorageService } from './local-storage.service';
 import { ServerNotReachableDialogComponent } from '../components/dialogs/server-not-reachable-dialog.component';
 import { HeaderStateService } from '../components/header/header-state.service';
-import { FilterObject, ORDER_FILTER, Orders, OrderStatus, SAVED_WAREHOUSE_ID } from '../shared/interface';
+import { FilterObject, ORDER_FILTER, Orders, OrderStatus, SAVED_WAREHOUSE_ID, Stats } from '../shared/interface';
 
 
 @Injectable({
@@ -18,7 +18,7 @@ import { FilterObject, ORDER_FILTER, Orders, OrderStatus, SAVED_WAREHOUSE_ID } f
 export class StateService implements OnDestroy {
   private timeoutRef: ReturnType<typeof setTimeout> | null = null;
   private initialDataLoaded: boolean = false;
-  private tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 0));
+  private tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 1));
   shippingDate: WritableSignal<Date> = signal<Date>(this.tomorrowDate);
   selectedWarehouse: WritableSignal<string> = signal<string>('');
   warehouseDropdownList: WritableSignal<string[]> = signal<string[]>([]);
@@ -26,6 +26,7 @@ export class StateService implements OnDestroy {
   globalFilterOrderId: WritableSignal<string | null> = signal<string | null>(null);
   selectedOrder: WritableSignal<Orders | null> = signal<Orders | null>(null);
   orders: WritableSignal<Orders[]> = signal<Orders[]>([]);
+  stats: WritableSignal<Stats[]> = signal<Stats[]>([]);
   filter: WritableSignal<FilterObject> = signal<FilterObject>({queryString: "", orderSource:"none", orderStatus: 'none'});
   localShippingDate: Signal<string>;
 
@@ -102,9 +103,10 @@ export class StateService implements OnDestroy {
         this.selectedWarehouse.set(location);
 
         const orderFilter = JSON.parse(this.localStorage.getItem(ORDER_FILTER) ?? "{}");
-        this.filter.set(orderFilter)
+        //this.filter.set(orderFilter) maybe
 
-        this.pollForUpdate();
+        this.pollForOrderUpdate();
+        this.pollForStatsUpdate();
       },
       error: () => {
         this.dialog.closeAll();
@@ -118,24 +120,37 @@ export class StateService implements OnDestroy {
 
   private loadDataOnFilterChanged() {
     this.header.showBuffering.set(true)
+
     this.apiService.getOrderUpdate(0, this.localShippingDate(), this.selectedWarehouse(), null)
       .subscribe({
-      next: (result) => {
-        this.orders.set(result);
-      },
-      error: (err) => {
-        this.dialog.open(ServerNotReachableDialogComponent, {disableClose: true});
-        this.autoReloadBrowser(15000)
-      }
-
+        next: (result) => {
+          this.orders.set(result);
+        },
+        error: (err) => {
+          this.dialog.open(ServerNotReachableDialogComponent, {disableClose: true});
+          this.autoReloadBrowser(15000)
+        }
     })
+
+    this.apiService.getStatsUpdate(this.localShippingDate(), this.selectedWarehouse())
+      .subscribe({
+        next: (result) => {
+          this.stats.set(result);
+        },
+        error: (err) => {
+          this.dialog.open(ServerNotReachableDialogComponent, {disableClose: true});
+          this.autoReloadBrowser(15000)
+        }
+      })
+
+
   }
 
   /**
    * Periodically checks for route updates
    * @private
    */
-  private pollForUpdate() {
+  private pollForOrderUpdate() {
     this.ngZone.runOutsideAngular(() => {
       this.apiService.pollOrderUpdate(
         this.pollTimestamp,
@@ -145,6 +160,26 @@ export class StateService implements OnDestroy {
         .subscribe({
           next: (result) => {
             this.orders.set(result);
+          },
+          error: (err) => {
+            this.dialog.closeAll();
+            this.dialog.open(ServerNotReachableDialogComponent, {
+              disableClose: true,
+            });
+            this.autoReloadBrowser(5000)
+          }
+        });
+    })
+  }
+
+  private pollForStatsUpdate() {
+    this.ngZone.runOutsideAngular(() => {
+      this.apiService.pollStatsUpdate(
+        this.localShippingDate,
+        this.selectedWarehouse)
+        .subscribe({
+          next: (result) => {
+            this.stats.set(result);
           },
           error: (err) => {
             this.dialog.closeAll();
@@ -200,4 +235,6 @@ export class StateService implements OnDestroy {
     this.filter.set(orderFilter)
     this.loadDataOnFilterChanged()
   }
+
+
 }
