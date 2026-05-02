@@ -15,6 +15,7 @@ import {
 import { AgGridAngular } from 'ag-grid-angular';
 import { StatusRendererComponent } from './status-renderer.component';
 import { StateService } from '../../services/state.service';
+import { CsvExporter } from './csv-exporter';
 ModuleRegistry.registerModules([AllCommunityModule, RowDragModule]);
 
 @Component({
@@ -64,7 +65,7 @@ export class Aggrid {
     { headerName: 'Sales Order#', field: 'orderId', width: 195 },
     {
       headerName: 'Status',
-      field: 'salesOrderNumber',
+      field: 'sta',
       minWidth: 1000,
       cellRenderer: StatusRendererComponent,
       sortable: true,
@@ -94,7 +95,17 @@ export class Aggrid {
   }
 
   @Input() set onExportCsv(val: number) {
-    if (val > 0) this.gridApi?.exportDataAsCsv();
+    if(val <= 0)return;
+
+    const filterd: Orders[] = []
+    this.gridApi.forEachNodeAfterFilter(node => {  // respects current filters
+      if(node.data){
+        filterd.push(node.data)
+      }
+    });
+
+    CsvExporter.download(filterd, 'orders.csv');
+    //this.convertToCSV(headers, rows);
   }
 
   @Input()

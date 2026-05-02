@@ -18,7 +18,7 @@ import { FilterObject, ORDER_FILTER, Orders, OrderStatus, SAVED_WAREHOUSE_ID } f
 export class StateService implements OnDestroy {
   private timeoutRef: ReturnType<typeof setTimeout> | null = null;
   private initialDataLoaded: boolean = false;
-  private tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 1));
+  private tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 0));
   shippingDate: WritableSignal<Date> = signal<Date>(this.tomorrowDate);
   selectedWarehouse: WritableSignal<string> = signal<string>('');
   warehouseDropdownList: WritableSignal<string[]> = signal<string[]>([]);
