@@ -48,7 +48,12 @@ export class OrderTreeDiagram {
     nodeDraggingEnabled: false,
     viewportPanningEnabled: false,
     hideWatermark: true,
-    zoom: { step: 0 },
+    zoom: {
+      zoomToFit: {
+        onInit: true,
+        padding: 40,
+      },
+    },
     linking: { validateConnection: () => false },
   };
 
