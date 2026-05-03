@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { Orders } from '../../shared/interface';
 import { SearchInput } from '../search-input/search-input';
+import { OperationFailedDialog } from '../dialogs/operation-failed-dialog.component';
 
 @Component({
   selector: 'app-info-order-details',
@@ -158,6 +159,11 @@ export class InfoOrderDetails implements OnInit {
       error: (err) => {
         this.loading = false;
         this.cdr.detectChanges();
+        this.dialog.open(OperationFailedDialog,{
+          data: {
+            message: err,
+          }});
+
       },
     });
   }

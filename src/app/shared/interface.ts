@@ -1,5 +1,5 @@
 
-export type IntegrationStatus = 'OPEN' | 'COMPLETED' | 'PARTIAL' | 'ERROR'
+export type IntegrationStatus = 'PENDING' | 'COMPLETED' | 'PARTIAL' | 'ERROR'
 export type OrderSource = 'none' | 'website' | 'oe' | 'pierless' | 'edi'; // must match website
 export type OrderStatus = 'none' | 'dynamics' | 'integrated' | 'routed' | 'shipped';
 export const ORDER_FILTER = 'order-filter';

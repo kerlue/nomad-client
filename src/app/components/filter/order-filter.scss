@@ -21,6 +21,7 @@
   align-items: center;
   gap: 0.5rem;
   margin-right: 18px;
+  flex-shrink: 0;
 }
 
 .filter-left,
@@ -47,7 +48,12 @@
   line-height: 32px;
   font-size: 13px;
   padding: 0 20px;
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex-shrink: 1;
 
   .mat-icon {
     font-size: 16px;

@@ -53,7 +53,6 @@ import { OperationSuccessfulDialog } from '../dialogs/operation-successful-dialo
           <mat-icon>download</mat-icon>
           Export CSV
         </button>
-
       </div>
     </div>
   `,

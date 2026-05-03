@@ -13,7 +13,7 @@ import {
   GetRowIdParams,
 } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular';
-import { StatusRendererComponent } from './status-renderer.component';
+import { StatusRenderer } from './status-renderer';
 import { StateService } from '../../services/state.service';
 import { CsvExporter } from './csv-exporter';
 ModuleRegistry.registerModules([AllCommunityModule, RowDragModule]);
@@ -60,19 +60,18 @@ export class Aggrid {
   };
 
   colDefs: ColDef[] = [
-    { headerName: 'Customer', field: 'customerName', width: 290 },
-    { headerName: 'Order Number', field: 'customerCode', width: 195 },
-    { headerName: 'Sales Order#', field: 'orderId', width: 195 },
+    { headerName: 'Customer', field: 'customerName', flex: 1, minWidth: 0 },
+    { headerName: 'Order Number', field: 'customerCode', width: 190 },
+    { headerName: 'Sales Order#', field: 'orderId', width: 190 },
     {
       headerName: 'Status',
-      field: 'sta',
-      minWidth: 1000,
-      cellRenderer: StatusRendererComponent,
+      field: 'status',
+      cellRenderer: StatusRenderer,
       sortable: true,
       filter: true,
-      cellStyle: {
-        marginTop: '0px'
-      },
+      cellStyle: { marginTop: '0px' },
+      flex: 2,
+      minWidth: 820
     },
   ];
 
@@ -162,7 +161,7 @@ export class Aggrid {
         statusOk = !data.erpIntegrated;
         break;
       case 'integrated':
-        statusOk = data.integrationStatus == 'OPEN' ||  data.integrationStatus == 'PARTIAL';
+        statusOk = data.integrationStatus == 'PENDING' ||  data.integrationStatus == 'PARTIAL';
         break;
       case 'routed':
         statusOk = !data.routedAt;

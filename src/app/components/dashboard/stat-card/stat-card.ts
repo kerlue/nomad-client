@@ -31,7 +31,7 @@ export class StatCard {
     //Last sync checker
     const isLastSynced = stat.title === "Query Latency";
     const lastSec = Number(String(item.value).replace(/[^0-9.-]/g, ""));
-    const isStale = lastSec > 15.0 // if more than 15sec warn
+    const isStale = lastSec > 12.0 // if more than 15sec warn
 
     if (isLastSynced && isStale) return true;
 
@@ -39,9 +39,6 @@ export class StatCard {
     const isAvgIntSynced = stat.title === "Avg. Integration Time";
     const avgLastSec = Number(String(item.value).replace(/[^0-9.-]/g, ""));
     const isAvgStale = avgLastSec > 2 * 60; //2minutes
-
-    console.log(lastSec)
-
 
     if (isAvgIntSynced && isAvgStale) return true;
 
@@ -51,9 +48,19 @@ export class StatCard {
 
   getImage(position: number) {
     if(position == 0){
-
+      return "trending_up.svg"
+    }
+    else if(position == 1){
+      return "info.svg"
+    }
+    else if(position == 2){
+      return "timelapse.svg"
+    }
+    else if(position == 3){
+      return "database_search.svg"
     }
 
-    return "package_2.svg"
+
+    return ""
   }
 }

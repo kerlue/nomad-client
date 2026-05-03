@@ -5,7 +5,7 @@ import {
   initializeModel,
   provideNgDiagram, ModelAdapter
 } from 'ng-diagram';
-import { BrokenEdgeComponent } from './broken-edge';
+import { BrokenEdgeComponent } from './edges/broken-edge';
 import { Orders } from '../../shared/interface';
 import {
   Component,
@@ -15,7 +15,7 @@ import {
   runInInjectionContext,
   EnvironmentInjector
 } from '@angular/core';
-import { SuccessEdgeComponent } from './success-edge';
+import { SuccessEdgeComponent } from './edges/success-edge';
 
 @Component({
   imports: [NgDiagramComponent],
@@ -33,9 +33,7 @@ import { SuccessEdgeComponent } from './success-edge';
     :host {
       display: flex;
       height: 550px;
-    }
 
-    :host {
       --ngd-port-background-color: transparent;
       --ngd-port-background-color-hover: transparent;
       --ngd-port-border-color: transparent;
@@ -43,11 +41,15 @@ import { SuccessEdgeComponent } from './success-edge';
   `,
 })
 export class OrderTreeDiagram {
+
+  model!: ModelAdapter;
+
   config: NgDiagramConfig = {
     nodeDraggingEnabled: false,
     viewportPanningEnabled: false,
     hideWatermark: true,
     zoom: { step: 0 },
+    linking: { validateConnection: () => false },
   };
 
   edgeTemplateMap = new NgDiagramEdgeTemplateMap([
@@ -55,7 +57,6 @@ export class OrderTreeDiagram {
     ['success', SuccessEdgeComponent],
   ]);
 
-  model!: ModelAdapter;
 
   constructor(private cdr: ChangeDetectorRef,
               private injector: EnvironmentInjector) {}
@@ -71,11 +72,10 @@ export class OrderTreeDiagram {
         nodes: [
           { id: 'source',   draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 5,   y: offset.y + 250 }, data: { label: order.source } },
           { id: 'dynamics', draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 250, y: offset.y + 250 }, data: { label: 'Dynamics' } },
-          { id: 'intranet', draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 500, y: offset.y + 250 }, data: { label: 'Intranet' } },
-          { id: 'wave',     draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 750, y: offset.y + 250 }, data: { label: 'Wave' } },
-
-          { id: 'highJump',  draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 380, y: offset.y + 100 }, data: { label: 'HighJump' } },
-          { id: 'driverApp', draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 380, y: offset.y + 400 }, data: { label: 'DriverApp' } },
+          { id: 'intranet', draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 500, y: offset.y + 250 }, data: { label: 'IntranetDB' } },
+          { id: 'wave',     draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 750, y: offset.y + 250 }, data: { label: 'WaveDB' } },
+          { id: 'highJump',  draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 380, y: offset.y + 100 }, data: { label: 'HighJumpDB' } },
+          { id: 'driverApp', draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 380, y: offset.y + 400 }, data: { label: 'DriverAppDB' } },
         ],
 
         edges: [
