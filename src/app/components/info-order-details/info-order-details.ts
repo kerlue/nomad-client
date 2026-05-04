@@ -161,7 +161,7 @@ export class InfoOrderDetails implements OnInit {
         this.cdr.detectChanges();
         this.dialog.open(OperationFailedDialog,{
           data: {
-            message: err,
+            message: err.error,
           }});
 
       },

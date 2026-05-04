@@ -38,6 +38,7 @@ export interface Orders {
   shippingDate: string;
   source: string;
   orderNeedsAttention: boolean
+  orderNeedsMessage: string
 
   // integration timestamps from target
   intraDbIntegrateAt: string;
@@ -53,6 +54,7 @@ export interface Orders {
 export interface Stats {
   title: string;
   position: number;
+  toolTip: number;
   stats: StatItem[];
 }
 

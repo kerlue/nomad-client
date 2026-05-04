@@ -5,6 +5,7 @@ import { MatIcon } from '@angular/material/icon';
 import { StateService } from '../../services/state.service';
 import { InfoOrderDetails } from '../info-order-details/info-order-details';
 import { InfoTimeline } from '../info-timeline/info-timeline';
+import { InfoWarningBanner } from '../info-warning-banner/info-warning-banner';
 
 @Component({
   selector: 'app-info-tab',
@@ -17,6 +18,7 @@ import { InfoTimeline } from '../info-timeline/info-timeline';
     InfoOrderDetails,
     MatTabContent,
     InfoTimeline,
+    InfoWarningBanner,
   ],
   styleUrl: './info-tab.scss',
   template: `
@@ -32,6 +34,7 @@ import { InfoTimeline } from '../info-timeline/info-timeline';
           Overview
         </ng-template>
         <ng-template matTabContent>
+          <app-info-warning-banner [message]="state.selectedOrder()?.orderNeedsMessage"></app-info-warning-banner>
           <app-info-tree-diagram [selectedOrder]="state.selectedOrder()"></app-info-tree-diagram>
         </ng-template>
       </mat-tab>
@@ -55,7 +58,6 @@ import { InfoTimeline } from '../info-timeline/info-timeline';
           <app-info-timeline [selectedOrder]="state.selectedOrder()"></app-info-timeline>
         </ng-template>
       </mat-tab>
-
 
       <mat-tab>
         <ng-template mat-tab-label>
