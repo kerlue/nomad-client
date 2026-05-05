@@ -10,6 +10,7 @@ import { ApiService } from '../../services/api.service';
 import { OperationFailedDialog } from '../dialogs/operation-failed-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { OperationSuccessfulDialog } from '../dialogs/operation-successful-dialog.component';
+import { ConfirmRequestComponent } from '../dialogs/confirm-request';
 
 @Component({
   selector: 'app-order-filter',
@@ -87,13 +88,24 @@ export class OrderFilter {
       order => order.orderNeedsAttention && order.integrationStatus != 'COMPLETED'
     );
 
-    this.api.triggerIntegration(orders).subscribe({
-      next: (value: any) => {
-        this.dialog.open(OperationSuccessfulDialog);
-      },
-      error: (err) => {
-        this.dialog.open(OperationFailedDialog);
-      },
+    const orderIds = orders.map(order => order.orderId).join(', ');
+
+    this.dialog.open(ConfirmRequestComponent, {
+      data: {
+        header: 'Re-trigger Integration',
+        message: `Re-trigger integration for the following orders? ${orderIds}`,
+        disableCancel: false,
+        onConfirm: () => {
+          this.api.triggerIntegration(orders).subscribe({
+            next: (value: any) => {
+              this.dialog.open(OperationSuccessfulDialog);
+            },
+            error: (err) => {
+              this.dialog.open(OperationFailedDialog);
+            },
+          });
+        }
+      }
     });
   }
 

@@ -61,7 +61,7 @@ export class Aggrid {
 
   colDefs: ColDef[] = [
     { headerName: 'Customer', field: 'customerName', flex: 1, minWidth: 0 },
-    { headerName: 'Order Number', field: 'customerCode', width: 190 },
+    { headerName: 'Customer Number', field: 'customerCode', width: 190 },
     { headerName: 'Sales Order#', field: 'orderId', width: 190 },
     {
       headerName: 'Status',
