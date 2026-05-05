@@ -62,3 +62,15 @@ export interface StatItem {
   label: string;
   value: string | number;
 }
+
+
+export interface ApiLog {
+  id: number;
+  type: string | null;
+  url: string | null;
+  json: string | null;
+  responsetext: string | null;
+  startdate: Date;
+  statuscode: number | null;
+  storedProcedure: string | null;
+}

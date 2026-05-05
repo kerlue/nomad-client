@@ -8,7 +8,7 @@ import {
 import {HttpClient} from "@angular/common/http";
 import {switchMap} from "rxjs/operators";
 import { environment } from '../environments/environment';
-import { InitialState, OrderResult, Orders, Stats } from '../shared/interface';
+import { ApiLog, InitialState, OrderResult, Orders, Stats } from '../shared/interface';
 
 @Injectable({
   providedIn: 'root',
@@ -90,7 +90,9 @@ export class ApiService {
   }
 
 
-
+  fetchOrderLogs(input: any) {
+    return this.http.post<ApiLog[]>(`${this.nomadApi}/fetch-api-log`, input);
+  }
 }
 
 

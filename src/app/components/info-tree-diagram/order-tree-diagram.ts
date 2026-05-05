@@ -32,7 +32,7 @@ import { SuccessEdgeComponent } from './edges/success-edge';
   styles: `
     :host {
       display: flex;
-      height: 550px;
+      height: 400px;
 
       --ngd-port-background-color: transparent;
       --ngd-port-background-color-hover: transparent;
@@ -77,17 +77,15 @@ export class OrderTreeDiagram {
         nodes: [
           { id: 'source',   draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 5,   y: offset.y + 250 }, data: { label: order.source } },
           { id: 'dynamics', draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 250, y: offset.y + 250 }, data: { label: 'Dynamics' } },
-          { id: 'intranet', draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 500, y: offset.y + 250 }, data: { label: 'IntranetDB' } },
-          { id: 'wave',     draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 750, y: offset.y + 250 }, data: { label: 'WaveDB' } },
-          { id: 'highJump',  draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 380, y: offset.y + 100 }, data: { label: 'HighJumpDB' } },
-          { id: 'driverApp', draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 380, y: offset.y + 400 }, data: { label: 'DriverAppDB' } },
+          { id: 'intranet', draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 380, y: offset.y + 150 }, data: { label: 'IntranetDB' } },
+          { id: 'wave',     draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 650, y: offset.y + 100 }, data: { label: 'WaveDB' } },
+          { id: 'highJump',  draggable: false, resizable: false, rotatable: false, position: { x: offset.x + 380, y: offset.y + 350 },  data: { label: 'HighJumpDB' } },
         ],
 
         edges: [
           { id: 'to_dynamics', type: this.edgeType(order.erpIntegrated, order),        targetArrowhead: 'ng-diagram-arrow', source: 'source',   target: 'dynamics',  data: {} },
           { id: 'to_intra',    type: this.edgeType(order.intraDbIntegrateAt, order),   targetArrowhead: 'ng-diagram-arrow', source: 'dynamics', target: 'intranet',  data: {} },
           { id: 'to_hj',       type: this.edgeType(order.hJumpDbIntegratedAt, order),  targetArrowhead: 'ng-diagram-arrow', source: 'dynamics', target: 'highJump',  data: {} },
-          { id: 'to_driver',   type: this.edgeType(order.driverDbIntegratedAt, order), targetArrowhead: 'ng-diagram-arrow', source: 'dynamics', target: 'driverApp', data: {} },
           { id: 'to_wave',     type: this.edgeType(order.waveDbIntegratedAt, order),   targetArrowhead: 'ng-diagram-arrow', source: 'intranet', target: 'wave',      data: {} },
         ],
       });
