@@ -26,17 +26,12 @@ import { Dashboard } from '../components/dashboard/dashboard';
         [orders]="this.state.orders()"
         [filter]="this.state.filter()"
         [onExportCsv]="onExportCsv"
-        (onRowSelected)="onRowSelected($event)"
       ></app-aggrid>
     </div>
   `,
 })
 export class AppFrontendLayout {
-  protected showInfoPanel: number = 0;
   protected onExportCsv: number = 0;
   constructor(protected state: StateService) {}
 
-  onRowSelected(event: any) {
-    this.showInfoPanel++;
-  }
 }

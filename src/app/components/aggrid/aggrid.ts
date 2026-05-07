@@ -28,11 +28,11 @@ ModuleRegistry.registerModules([AllCommunityModule, RowDragModule]);
       [columnDefs]="colDefs"
       [defaultColDef]="defaultColDef"
       [gridOptions]="gridOptions"
-      (cellClicked)="onCellClicked($event)"
       [enableCellTextSelection]="true"
       [rowData]="currentOrders"
       [rowHeight]="42"
       [theme]="GLOBAL_GRID_THEME"
+      (cellClicked)="onCellClicked($event)"
       (rowDataUpdated)="onRowDataUpdated()"
       [getRowId]="getRowId"
       (gridReady)="onGridReady($event)"
@@ -43,6 +43,12 @@ export class Aggrid {
   private currentFilter: FilterObject | null = null;
 
   gridOptions: GridOptions = {
+    getRowStyle: (params: any) => {
+      if (params.node.id === this.lastSelectedRowId) {
+        return { background: '#d0e8ff' };
+      }
+      return { background: ''};
+    },
     suppressCellFocus: true,
     isExternalFilterPresent: () => this.isExternalFilterPresent(),
     doesExternalFilterPass: (node) => this.doesExternalFilterPass(node),
@@ -78,6 +84,7 @@ export class Aggrid {
   protected readonly GLOBAL_GRID_THEME = GLOBAL_GRID_THEME;
   protected currentOrders: Orders[] = [];
   @Output() onRowSelected = new EventEmitter<unknown>();
+  lastSelectedRowId: string | null = null;
 
   getRowId = (params: GetRowIdParams) => String(params.data.orderId);
   private gridApi!: GridApi<Orders>;
@@ -130,7 +137,19 @@ export class Aggrid {
     const order = this.state.orders().find(
       o => o.orderId === $event.data.orderId
     ) ?? null;
+
     this.state.selectedOrder.set(order);
+
+    // Collect nodes to redraw
+    const nodesToRedraw = [];
+    if (this.lastSelectedRowId) {
+      const prevNode = this.gridApi.getRowNode(this.lastSelectedRowId);
+      if (prevNode) nodesToRedraw.push(prevNode);
+    }
+    this.lastSelectedRowId = $event.node.id;
+    nodesToRedraw.push($event.node);
+
+    this.gridApi.redrawRows({ rowNodes: nodesToRedraw });
   }
 
   private isExternalFilterPresent(): boolean {

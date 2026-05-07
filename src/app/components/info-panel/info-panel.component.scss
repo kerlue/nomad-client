@@ -16,12 +16,15 @@
   }
 }
 
+.popover-host{
+}
+
 .popover-panel {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
-  width: 50vw;
+  width: 60vw;
   max-width: 90vw;
   background-color: #fff;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);

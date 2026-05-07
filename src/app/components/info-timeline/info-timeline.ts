@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridOptions } from 'ag-grid-community';
 import { Orders } from '../../shared/interface';
+import { GLOBAL_GRID_THEME } from '../aggrid/grid-theme.constant';
 
 interface TimelineRow {
   event: string;
@@ -27,6 +28,7 @@ interface TimelineRow {
           [rowData]="rowData"
           [columnDefs]="columnDefs"
           [defaultColDef]="defaultColDef"
+          [theme]="GLOBAL_GRID_THEME"
           [gridOptions]="gridOptions">
         </ag-grid-angular>
       </div>
@@ -122,4 +124,6 @@ export class InfoTimeline {
     const d = new Date(value);
     return isNaN(d.getTime()) ? null : d;
   }
+
+  protected readonly GLOBAL_GRID_THEME = GLOBAL_GRID_THEME;
 }

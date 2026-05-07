@@ -27,6 +27,8 @@ export class ApiService {
   }
 
   public fetchOrderDetails(orderId: string, divisionId: string) {
+
+    console.log(`${this.nomadApi}/fetch-order-details/${divisionId}/${orderId}`);
     return this.http.get(`${this.nomadApi}/fetch-order-details/${divisionId}/${orderId}`);
   }
 

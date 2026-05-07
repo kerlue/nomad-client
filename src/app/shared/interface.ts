@@ -69,8 +69,8 @@ export interface ApiLog {
   type: string | null;
   url: string | null;
   json: string | null;
-  responsetext: string | null;
-  startdate: Date;
-  statuscode: number | null;
+  response: string | null;
+  date: Date;
+  code: number | null;
   storedProcedure: string | null;
 }

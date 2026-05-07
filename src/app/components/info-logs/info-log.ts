@@ -6,21 +6,22 @@ import {
   GridApi,
   GridReadyEvent,
 } from 'ag-grid-community';
-import { JsonViewerDialogComponent } from './json-expand-cell';
+import { JsonViewerDialogComponent } from './json-expand-dialog';
 import { ApiService } from '../../services/api.service';
 import { Orders } from '../../shared/interface';
 import { OperationFailedDialog } from '../dialogs/operation-failed-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { GLOBAL_GRID_THEME } from '../aggrid/grid-theme.constant';
 
 export interface ApiLog {
   id: number;
   type: string | null;
   url: string | null;
   json: string | null;
-  responseText: string | null;
-  startDate: Date;
-  statusCode: number | null;
+  response: string | null;
+  date: Date;
+  code: number | null;
   storedProcedure: string | null;
 }
 
@@ -28,6 +29,7 @@ export interface ApiLog {
   selector: 'app-api-log',
   standalone: true,
   imports: [CommonModule, AgGridModule, MatProgressSpinner],
+  styleUrls: ['./info-log.scss'],
   template: `
     @if (loading) {
       <div class="loader-overlay">
@@ -37,24 +39,18 @@ export interface ApiLog {
     <div class="grid-wrapper">
       <ag-grid-angular
         class="ag-theme-alpine"
-        style="width: 100%; height: 600px;"
+        style="width: 100%; height: 100%;"
         [rowData]="rowData"
         [columnDefs]="columnDefs"
         [defaultColDef]="defaultColDef"
         [animateRows]="true"
+        [theme]="GLOBAL_GRID_THEME"
         (cellClicked)="onCellClicked($event)"
         [rowHeight]="40"
         (gridReady)="onGridReady($event)"
       />
     </div>
   `,
-  styles: [
-    `
-      .grid-wrapper {
-        padding: 16px;
-      }
-    `,
-  ],
 })
 export class ApiLogComponent implements OnInit {
   protected loading: boolean = false;
@@ -76,15 +72,15 @@ export class ApiLogComponent implements OnInit {
 
   columnDefs: ColDef[] = [
     {
-      field: 'startdate',
+      field: 'date',
       headerName: 'Start Date',
-      width: 140,
+      width: 180,
       valueFormatter: (params) => (params.value ? new Date(params.value).toLocaleString() : ''),
     },
     {
-      field: 'statuscode',
+      field: 'code',
       headerName: 'Code',
-      width: 60,
+      width: 90,
       valueFormatter: (params) => params.value,
     },
     {
@@ -102,7 +98,7 @@ export class ApiLogComponent implements OnInit {
       autoHeight: true,
     },
     {
-      field: 'responsetext',
+      field: 'response',
       headerName: 'Response Text',
       width: 200,
       flex: 1,
@@ -118,11 +114,11 @@ export class ApiLogComponent implements OnInit {
   }
 
   onCellClicked(event: any): void {
-    const clickableFields = ['json', 'responsetext'];
+    const clickableFields = ['json', 'response'];
     if (!clickableFields.includes(event.colDef.field!) || !event.value) return;
 
     this.dialog.open(JsonViewerDialogComponent, {
-      width: '700px',
+      minWidth: '50vw',
       maxHeight: '80vh',
       data: {
         label: event.colDef.headerName,
@@ -174,4 +170,6 @@ export class ApiLogComponent implements OnInit {
       },
     });
   }
+
+  protected readonly GLOBAL_GRID_THEME = GLOBAL_GRID_THEME;
 }

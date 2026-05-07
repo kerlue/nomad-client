@@ -41,9 +41,8 @@ export interface JsonViewerDialogData {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 20px 0;
       border-bottom: 1px solid #e5e7eb;
-      padding-bottom: 12px;
+      margin-right: 20px;
     }
 
     h2[mat-dialog-title] {

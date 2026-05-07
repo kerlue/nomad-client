@@ -1,0 +1,13 @@
+.loader-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  top: 220px;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 1000;
+}
+.grid-wrapper {
+  padding: 16px;
+  height: calc(100vh - 155px);
+}

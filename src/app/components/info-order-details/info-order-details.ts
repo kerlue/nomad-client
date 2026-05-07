@@ -104,6 +104,7 @@ export class InfoOrderDetails implements OnInit {
       return;
     }
 
+
     this.loading = true;
     this.api.fetchOrderDetails(orderId, divisionId).subscribe({
       next: (value: any) => {
@@ -119,7 +120,6 @@ export class InfoOrderDetails implements OnInit {
           data: {
             message: err.error,
           }});
-
       },
     });
   }

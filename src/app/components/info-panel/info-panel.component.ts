@@ -60,13 +60,6 @@ export class InfoPanelComponent {
 
   constructor(protected state: StateService) {}
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    if (this.isOpen && this.popoverHost && !this.popoverHost.nativeElement.contains(event.target)) {
-      this.close();
-      this.state.selectedOrder.set(null);
-    }
-  }
 
   close(): void {
     this.isOpen = false;
